@@ -19,12 +19,13 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     int userScore = 0000;
-
+    private final int secondConv = 1000;
+    private final int converter = 60;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final CounterClass timer = new CounterClass(500000, 1000);
+        final CounterClass timer = new CounterClass(50000, 1000);
         timer.start();
     }
 
@@ -50,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void onTick(long millisRemaining) {
-            long minutes = millisRemaining / 100000;
-            long seconds = millisRemaining / 1000;
+            long Tempseconds = millisRemaining / secondConv;
+            long minutes = Tempseconds/ converter;
+            long seconds = (Tempseconds % converter) ;
             String minAndSecs = String.format("%02d:%02d", minutes, seconds);
             TextView quantityTextView = (TextView) findViewById(R.id.Timer);
             quantityTextView.setText(minAndSecs);
