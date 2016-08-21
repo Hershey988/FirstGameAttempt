@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void increaseScore(View view) {
-        userScore += 100;
+        int incrementScore = 100;
+
+        userScore += incrementScore;
         displayScore(userScore);
     }
 
