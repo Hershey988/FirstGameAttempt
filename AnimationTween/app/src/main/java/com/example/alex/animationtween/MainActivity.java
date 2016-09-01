@@ -12,6 +12,13 @@ public class MainActivity extends drawingThread {
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
+//        Thread gameAnimation = new Thread() {
+//          public run(){
+//              try{
+//
+//              } catch  (inter)
+//          }
+//        };
 
     }
 
