@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.alex.development.R;
@@ -32,13 +33,13 @@ public class Play extends AppCompatActivity {
        // setContentView(R.layout.activity_main);
        // final CounterClass timer = new CounterClass(50000, 1000);
         //timer.start();
+
         ball = new Ball[numOfBall];
         for (int i = 0; i < numOfBall; i++)
         {
         ball[i] = new Ball(this);
         ball[i].ballInit();
         setContentView(ball[i]);
-
         }
     }
 
