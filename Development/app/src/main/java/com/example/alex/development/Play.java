@@ -6,6 +6,10 @@ package com.example.alex.development;
  * package com.example.android.justjava;
  */
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -37,10 +41,12 @@ public class Play extends AppCompatActivity {
         ball = new Ball[numOfBall];
         for (int i = 0; i < numOfBall; i++)
         {
-        ball[i] = new Ball(this);
-        ball[i].ballInit();
-        setContentView(ball[i]);
+            Bitmap ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+            ball[i] = new Ball(ballimg);
+            ball[i].ballInit();
         }
+        Drawing display = new Drawing(this);
+        setContentView(display);
     }
 
     /**
@@ -85,4 +91,23 @@ public class Play extends AppCompatActivity {
         TextView quantityTextView = (TextView) findViewById(R.id.Timer);
         quantityTextView.setText("" + number);
     }
+
+    public class Drawing extends View {
+
+        public Drawing(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+
+            for (int i = 0; i < numOfBall; i++)
+            {
+            canvas.drawBitmap(ball[i].getImage(), ball[i].getPositionY(), ball[i].getPositionX(), null);
+            }
+        }
+    }
+
+
 }

@@ -39,10 +39,10 @@ public class DrawBall extends View {
         canvas.drawBitmap(gBall, ballxy.getPositionY(), ballxy.getPositionX(), null);
 
 
-        ballxy.setPositionX(speed);
-        ballxy.setPositionY(speed);
-        invalidate();
-    }
+    ballxy.setPositionX(speed);
+    ballxy.setPositionY(speed);
+    invalidate();
+}
 
     /*
     public void checkBounds(BallCoordinates ball, Canvas canvas){

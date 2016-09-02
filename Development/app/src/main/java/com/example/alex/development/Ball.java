@@ -1,9 +1,12 @@
 package com.example.alex.development;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.util.Random;
@@ -11,17 +14,18 @@ import java.util.Random;
 /**
  * Created by Harsh on 9/2/2016.
  */
-public class Ball extends View{
+public class Ball extends AppCompatActivity {
 
     private int posX;
     private int posY;
     private Bitmap gBall;
+    private Bitmap ballImg;
 
 
 
-    public Ball(Context context) {
-        super(context);
-
+    public Ball(Bitmap image) {
+        ballInit();
+        setImage(image);
     }
 
     public void ballInit(){
@@ -31,20 +35,15 @@ public class Ball extends View{
         posY = r.nextInt(range);
     }
 
-
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        Bitmap gBall2 = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-        gBall = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-        canvas.drawBitmap(gBall, getPositionY(), getPositionX(), null);
-        canvas.drawBitmap(gBall2, 150, 150, null);
-        invalidate();
-
-
+    public void setImage(Bitmap image) {
+        ballImg = image;
     }
+
+    public Bitmap getImage(){
+        return ballImg;
+    }
+
+
 
     public void setPositionX(int posX) {
         this.posX += posX;
