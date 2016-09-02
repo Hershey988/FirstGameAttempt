@@ -9,7 +9,7 @@ import android.os.Bundle;
  * Created by Alex on 8/30/2016.
  */
 public class LoadingScreen extends Activity {
-    int Seconds = 9;
+    int Seconds = 1;
     int milliPerSec = 1000;
     MediaPlayer themeSong;
 
@@ -22,7 +22,9 @@ public class LoadingScreen extends Activity {
         Thread Launch = new Thread (){
             public void run(){
                 try{
-                    sleep(Seconds*milliPerSec);
+                    for(int i =0; i < Seconds; i++){
+                        sleep(milliPerSec);
+                    }
 
                 }catch(InterruptedException e) {
                     e.printStackTrace();

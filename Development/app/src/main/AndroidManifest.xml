@@ -9,24 +9,37 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".LoadingScreen">
+        <activity android:name=".LoadingScreen" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Play">
+        <activity android:name=".Play" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.example.alex.development.PLAY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Menu">
+        <activity android:name=".PlaySurface" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.example.alex.development.PLAYSURFACE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Settings" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.example.alex.development.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Menu" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.example.alex.development.MENU" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -56,14 +56,6 @@
         android:src="@drawable/blueball" />
 
     <!--Get rid of width and height hardcode Values ASAP -->
-    <ImageButton
-        android:id="@+id/BallTwo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/redball" />
 
     <!--Get rid of width and height hardcode Values ASAP -->
     <ImageButton
