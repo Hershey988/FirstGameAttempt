@@ -19,12 +19,12 @@ import com.example.alex.development.R;
  */
 public class Play extends AppCompatActivity {
 
-
+    Ball[] ball;
+    int numOfBall = 10;
     int userScore = 0000;
     private final int secondConv = 1000;
     private final int converter = 60;
 
-    DrawBall[] balls = new DrawBall[20];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +32,14 @@ public class Play extends AppCompatActivity {
        // setContentView(R.layout.activity_main);
        // final CounterClass timer = new CounterClass(50000, 1000);
         //timer.start();
-        for(int i = 0; i < balls.length; i++) {
-            balls[i] = new DrawBall(this);
+        ball = new Ball[numOfBall];
+        for (int i = 0; i < numOfBall; i++)
+        {
+        ball[i] = new Ball(this);
+        ball[i].ballInit();
+        setContentView(ball[i]);
+
         }
-        setContentView(balls[1]);
     }
 
     /**
