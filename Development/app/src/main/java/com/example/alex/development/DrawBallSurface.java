@@ -47,7 +47,6 @@ public class DrawBallSurface extends SurfaceView implements Runnable{
     while(isRunning){
         if(!ourHolder.getSurface().isValid())
             continue;
-
         Canvas canvas = ourHolder.lockCanvas();
 
         Bitmap gBall;
