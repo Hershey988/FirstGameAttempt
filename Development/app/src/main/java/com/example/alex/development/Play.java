@@ -37,7 +37,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     private final int converter = 60;
     Drawing display;
     float touchX, touchY;
-
+    boolean touched;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +100,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent motionEvent) {
         touchX = motionEvent.getX();
         touchY = motionEvent.getY();
+        if(touchX != 0){
+            touched = true;
+        }
         return true;
     }
 
@@ -175,16 +178,18 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 Canvas canvas = ourHolder.lockCanvas();
                 canvas.drawColor(0xffffffff);
 
-                    int imgWidth;
+                    int imgWidth, imgHeight;
 
                 for (int i = 0; i < ball.size(); i++) {
-                    imgWidth = ball.get(0).getImage().getWidth();
+                    imgWidth = ball.get(i).getImage().getWidth();
                     int ballX = ball.get(i).getPositionX();
-
+                    int ballY = ball.get(i).getPositionY();
+                    imgHeight = ball.get(i).getImage().getHeight();
                     // check if ball is in range of touch
-                    if (touchX != 0 && touchY != 0) {
+                    if (ballX < touchX && touchX < (ballX + imgWidth) &&
+                            ballY < touchY && touchY < (ballY + imgHeight)) {
                         ball.remove(i);
-                        if(i + 1 > ball.size())
+                        if(i  >= ball.size())
                             break;
                         continue;
                     }
