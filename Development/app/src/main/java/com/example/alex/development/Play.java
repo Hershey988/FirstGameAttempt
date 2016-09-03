@@ -50,6 +50,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             Bitmap ballimg;
             Random r = new Random();
             int color = r.nextInt(3) + 1;
+            
             if (color == 1) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
             } else if (color == 2) {

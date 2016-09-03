@@ -18,7 +18,6 @@ public class Ball extends AppCompatActivity {
 
     private int posX;
     private int posY;
-    private Bitmap gBall;
     private Bitmap ballImg;
     int speedX;
     int speedY;
