@@ -62,6 +62,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             ball.get(i).ballInit();
         }
         display = new Drawing(this);
+        display.setOnTouchListener(this);
         setContentView(display);
     }
 
