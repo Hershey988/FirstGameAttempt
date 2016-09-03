@@ -99,7 +99,11 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
+        try {
+            Thread.sleep(16);       // 1000/ 16 = 60 FPS
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         switch (motionEvent.getAction()){
 
         case MotionEvent.ACTION_DOWN:
