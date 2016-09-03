@@ -19,12 +19,15 @@ import android.widget.TextView;
 
 import com.example.alex.development.R;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * This app displays an order form to order coffee.
  */
 public class Play extends AppCompatActivity {
 
-    Ball[] ball;
+    ArrayList <Ball> ball = new ArrayList <Ball>();
     int numOfBall = 10;
     int userScore = 0000;
     private final int secondConv = 1000;
@@ -38,13 +41,23 @@ public class Play extends AppCompatActivity {
        // final CounterClass timer = new CounterClass(50000, 1000);
         //timer.start();
 
-
-        ball = new Ball[numOfBall];
         for (int i = 0; i < numOfBall; i++)
         {
-            Bitmap ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-            ball[i] = new Ball(ballimg);
-            ball[i].ballInit();
+            Bitmap ballimg;
+            Random r = new Random();
+            int color = r.nextInt(3)+1;
+            if(color == 1){
+                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+            }
+            else if(color == 2){
+                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+            }
+            else{
+                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+            }
+
+            ball.add(new Ball(ballimg));
+            ball.get(i).ballInit();
         }
         Drawing display = new Drawing(this);
         setContentView(display);
@@ -104,13 +117,12 @@ public class Play extends AppCompatActivity {
             super.onDraw(canvas);
             for (int i = 0; i < numOfBall; i++)
             {
-                canvas.drawBitmap(ball[i].getImage(), ball[i].getPositionX(), ball[i].getPositionY(), null);
-                ball[i].move(canvas.getWidth(), canvas.getHeight());
-                ball[i].setPositionY(ball[i].speedY);
-                ball[i].setPositionX(ball[i].speedX);
+                canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
+                ball.get(i).move(canvas.getWidth(), canvas.getHeight());
+                ball.get(i).setPositionY(ball.get(i).speedY);
+                ball.get(i).setPositionX(ball.get(i).speedX);
             }
             invalidate();
-
         }
     }
 
