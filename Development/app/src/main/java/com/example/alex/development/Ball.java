@@ -27,8 +27,8 @@ public class Ball extends AppCompatActivity {
         ballInit();
         setImage(image);
         Random r = new Random();
-        speedX = r.nextInt(5);
-        speedY = r.nextInt(5);
+        speedX = r.nextInt(10);
+        speedY = r.nextInt(10);
 
         if(speedX == 0 && speedY == 0){
             speedX = 1;
@@ -38,7 +38,8 @@ public class Ball extends AppCompatActivity {
 
     public void ballInit(){
         Random r = new Random();
-        int range = 900;
+        int range = 500;
+
         posX = r.nextInt(range);
         posY = r.nextInt(range);
     }

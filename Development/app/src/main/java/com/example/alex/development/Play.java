@@ -2,7 +2,7 @@ package com.example.alex.development;
 /**
  * Add your package below. Package name can be found in the project's AndroidManifest.xml file.
  * This is the package name our example uses:
- * <p/>
+ * <p>
  * package com.example.android.justjava;
  */
 
@@ -13,6 +13,9 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -25,42 +28,53 @@ import java.util.Random;
 /**
  * This app displays an order form to order coffee.
  */
-public class Play extends AppCompatActivity {
+public class Play extends AppCompatActivity implements View.OnTouchListener {
 
-    ArrayList <Ball> ball = new ArrayList <Ball>();
+    ArrayList<Ball> ball = new ArrayList<Ball>();
     int numOfBall = 10;
     int userScore = 0000;
     private final int secondConv = 1000;
     private final int converter = 60;
-
+    Drawing display;
+    float touchX, touchY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
-       // final CounterClass timer = new CounterClass(50000, 1000);
+        // setContentView(R.layout.activity_main);
+        // final CounterClass timer = new CounterClass(50000, 1000);
         //timer.start();
 
-        for (int i = 0; i < numOfBall; i++)
-        {
+        for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg;
             Random r = new Random();
-            int color = r.nextInt(3)+1;
-            if(color == 1){
+            int color = r.nextInt(3) + 1;
+            if (color == 1) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-            }
-            else if(color == 2){
+            } else if (color == 2) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-            }
-            else{
+            } else {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
             }
-
+            touchX = 0;
+            touchY = 0;
             ball.add(new Ball(ballimg));
             ball.get(i).ballInit();
         }
-        Drawing display = new Drawing(this);
+        display = new Drawing(this);
         setContentView(display);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        display.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        display.resume();
     }
 
     /**
@@ -81,6 +95,13 @@ public class Play extends AppCompatActivity {
         quantityTextView.setText("" + number);
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        touchX = motionEvent.getX();
+        touchY = motionEvent.getY();
+        return true;
+    }
+
     public class CounterClass extends CountDownTimer {
         public CounterClass(long millisOfTime, long countDownInterval) {
             super(millisOfTime, countDownInterval);
@@ -88,8 +109,8 @@ public class Play extends AppCompatActivity {
 
         public void onTick(long millisRemaining) {
             long Tempseconds = millisRemaining / secondConv;
-            long minutes = Tempseconds/ converter;
-            long seconds = (Tempseconds % converter) ;
+            long minutes = Tempseconds / converter;
+            long seconds = (Tempseconds % converter);
             String minAndSecs = String.format("%02d:%02d", minutes, seconds);
             TextView quantityTextView = (TextView) findViewById(R.id.Timer);
             quantityTextView.setText(minAndSecs);
@@ -106,24 +127,75 @@ public class Play extends AppCompatActivity {
         quantityTextView.setText("" + number);
     }
 
-    public class Drawing extends View {
+
+/*
+* Draws on Canvas
+* */
+
+
+    public class Drawing extends SurfaceView implements Runnable {
+        SurfaceHolder ourHolder;
+        Thread ourThread = null;
+        boolean isRunning = false;
 
         public Drawing(Context context) {
             super(context);
+            ourHolder = getHolder();
+            ourThread = new Thread(this);
+            ourThread.start();
         }
 
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            for (int i = 0; i < numOfBall; i++)
-            {
-                canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
-                ball.get(i).move(canvas.getWidth(), canvas.getHeight());
-                ball.get(i).setPositionY(ball.get(i).speedY);
-                ball.get(i).setPositionX(ball.get(i).speedX);
+        public void pause() {
+            isRunning = false;
+            while (true) {
+                try {
+                    ourThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
             }
-            invalidate();
+            ourThread = null;
         }
+
+        public void resume() {
+            isRunning = true;
+            ourThread = new Thread(this);
+            ourThread.start();
+        }
+
+
+        @Override
+        public void run() {
+            while (isRunning) {
+                if (!ourHolder.getSurface().isValid())
+                    continue;
+
+                Canvas canvas = ourHolder.lockCanvas();
+                canvas.drawColor(0xffffffff);
+
+                    int imgWidth;
+
+                for (int i = 0; i < ball.size(); i++) {
+                    imgWidth = ball.get(0).getImage().getWidth();
+                    int ballX = ball.get(i).getPositionX();
+
+                    // check if ball is in range of touch
+                    if (touchX != 0 && touchY != 0) {
+                        ball.remove(i);
+                        if(i + 1 > ball.size())
+                            break;
+                        continue;
+                    }
+                    canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
+                    ball.get(i).move(canvas.getWidth(), canvas.getHeight());
+                    ball.get(i).setPositionY(ball.get(i).speedY);
+                    ball.get(i).setPositionX(ball.get(i).speedX);
+                }
+                ourHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+
     }
 
 

@@ -17,7 +17,7 @@ import android.view.View;
 public class drawingThread extends Activity implements View.OnTouchListener {
     OurView v;
     Bitmap bball;
-
+    boolean dead;
     float positionX, positionY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class drawingThread extends Activity implements View.OnTouchListener {
         v = new OurView(this);
         v.setOnTouchListener(this);
         setContentView(v);
-
+        dead = false;
         bball = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
         positionX = 0;
         positionY = 0;
@@ -82,7 +82,9 @@ public class drawingThread extends Activity implements View.OnTouchListener {
                 } else {
                     positionY = 0;
                 }
-                c.drawBitmap(bball, positionX - offsetX, positionY - offsetY, null);
+                if(!dead) {
+                    c.drawBitmap(bball, positionX - offsetX, positionY - offsetY, null);
+                }
                 holder.unlockCanvasAndPost(c);
 
             }
@@ -116,11 +118,11 @@ public class drawingThread extends Activity implements View.OnTouchListener {
 
         if((positionX + 25) > me.getX() && (positionX - 25) < me.getX() )
         {
-            positionX = -999999;       //Erase from the game
+           dead = true;       //Erase from the game
         }
         if((positionY + 25) > me.getY() && (positionY - 25) < me.getY() )
         {
-            positionY = -999999;       //Erase from the game
+            dead = true;       //Erase from the game
         }
         //positionX = me.getX();          //Position in which the user touch
         //positionY = me.getY();
