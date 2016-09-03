@@ -104,7 +104,7 @@ public class Play extends AppCompatActivity {
 
             for (int i = 0; i < numOfBall; i++)
             {
-            canvas.drawBitmap(ball[i].getImage(), ball[i].getPositionY(), ball[i].getPositionX(), null);
+                canvas.drawBitmap(ball[i].getImage(), ball[i].getPositionY(), ball[i].getPositionX(), null);
             }
         }
     }
