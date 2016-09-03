@@ -38,6 +38,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     Drawing display;
     float touchX, touchY;
     boolean touched;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,10 +99,16 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        touchX = motionEvent.getX();
-        touchY = motionEvent.getY();
-        if(touchX != 0){
-            touched = true;
+
+        switch (motionEvent.getAction()){
+
+        case MotionEvent.ACTION_DOWN:
+            touchX = motionEvent.getX();
+            touchY = motionEvent.getY();
+        break;
+        default:
+            touchX = 0;
+            touchY = 0;
         }
         return true;
     }
@@ -178,21 +185,22 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 Canvas canvas = ourHolder.lockCanvas();
                 canvas.drawColor(0xffffffff);
 
-                    int imgWidth, imgHeight;
+                int imgWidth, imgHeight;
 
                 for (int i = 0; i < ball.size(); i++) {
                     imgWidth = ball.get(i).getImage().getWidth();
                     int ballX = ball.get(i).getPositionX();
                     int ballY = ball.get(i).getPositionY();
                     imgHeight = ball.get(i).getImage().getHeight();
+
                     // check if ball is in range of touch
                     if (ballX < touchX && touchX < (ballX + imgWidth) &&
                             ballY < touchY && touchY < (ballY + imgHeight)) {
                         ball.remove(i);
-                        if(i  >= ball.size())
-                            break;
+                        i--;
                         continue;
                     }
+
                     canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
                     ball.get(i).move(canvas.getWidth(), canvas.getHeight());
                     ball.get(i).setPositionY(ball.get(i).speedY);
@@ -202,7 +210,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
         }
 
-    }
 
+    }
 
 }
