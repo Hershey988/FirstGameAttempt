@@ -20,17 +20,25 @@ public class Ball extends AppCompatActivity {
     private int posY;
     private Bitmap gBall;
     private Bitmap ballImg;
-
-
+    int speedX;
+    int speedY;
 
     public Ball(Bitmap image) {
         ballInit();
         setImage(image);
+        Random r = new Random();
+        speedX = r.nextInt(5);
+        speedY = r.nextInt(5);
+
+        if(speedX == 0 && speedY == 0){
+            speedX = 1;
+            speedY = 1;
+        }
     }
 
     public void ballInit(){
         Random r = new Random();
-        int range = 500;
+        int range = 900;
         posX = r.nextInt(range);
         posY = r.nextInt(range);
     }
@@ -42,8 +50,6 @@ public class Ball extends AppCompatActivity {
     public Bitmap getImage(){
         return ballImg;
     }
-
-
 
     public void setPositionX(int posX) {
         this.posX += posX;
@@ -61,5 +67,22 @@ public class Ball extends AppCompatActivity {
         return posY;
     }
 
+    public void move(int width, int height){
+        int radius = ballImg.getWidth() / 2;
+        //in X direction
+        if((posX+radius) >= width-90){
+            speedX = -1 * speedX;
+        }
+        else if((posX-radius) <= -90){
+            speedX = Math.abs(speedX);
+        }
 
+        //In Y direction
+        if((posY+radius) >= height-90){
+            speedY = -1 * speedY;
+        }
+        else if((posY-radius) <= -90){
+            speedY = Math.abs(speedY);
+        }
+    }
 }

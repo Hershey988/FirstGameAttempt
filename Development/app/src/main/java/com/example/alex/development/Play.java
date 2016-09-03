@@ -38,6 +38,7 @@ public class Play extends AppCompatActivity {
        // final CounterClass timer = new CounterClass(50000, 1000);
         //timer.start();
 
+
         ball = new Ball[numOfBall];
         for (int i = 0; i < numOfBall; i++)
         {
@@ -101,12 +102,12 @@ public class Play extends AppCompatActivity {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            int speed = 5;
             for (int i = 0; i < numOfBall; i++)
             {
                 canvas.drawBitmap(ball[i].getImage(), ball[i].getPositionX(), ball[i].getPositionY(), null);
-                ball[i].setPositionY(speed);
-                ball[i].setPositionX(speed);
+                ball[i].move(canvas.getWidth(), canvas.getHeight());
+                ball[i].setPositionY(ball[i].speedY);
+                ball[i].setPositionX(ball[i].speedX);
             }
             invalidate();
 
