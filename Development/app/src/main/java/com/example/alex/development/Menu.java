@@ -22,14 +22,13 @@ public class Menu extends ListActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setListAdapter(new ArrayAdapter<String>(Menu.this, android.R.layout.simple_list_item_1, classes));
-        ourSong = MediaPlayer.create(Menu.this, R.raw.metroidechoes);
+        ourSong = MediaPlayer.create(Menu.this, R.raw.jazzelevator);
 
         SharedPreferences getPrefs = getSharedPreferences("musicSet", Context.MODE_PRIVATE);
         music = getPrefs.getBoolean("isMusicOn", true);
         if(music)
         {
             ourSong.start();
-            ourSong.seekTo(18000);
         }
     }
 
