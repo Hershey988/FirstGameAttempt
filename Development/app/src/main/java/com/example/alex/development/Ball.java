@@ -1,14 +1,8 @@
 package com.example.alex.development;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
+import android.graphics.Bitmap;
+import android.support.v7.app.AppCompatActivity;
 import java.util.Random;
 
 /**
@@ -67,21 +61,24 @@ public class Ball extends AppCompatActivity {
         return posY;
     }
 
+    //uses the width and height of our screen display
     public void move(int width, int height){
         int radius = ballImg.getWidth() / 2;
+        int buffer = 90;
+
         //in X direction
-        if((posX+radius) >= width-90){
+        if((posX+radius) >= width-buffer){
             speedX = -1 * speedX;
         }
-        else if((posX-radius) <= -90){
+        else if((posX-radius) <= -buffer){
             speedX = Math.abs(speedX);
         }
 
         //In Y direction
-        if((posY+radius) >= height-90){
+        if((posY+radius) >= height - buffer){
             speedY = -1 * speedY;
         }
-        else if((posY-radius) <= -90){
+        else if((posY-radius) <= - buffer){
             speedY = Math.abs(speedY);
         }
     }
