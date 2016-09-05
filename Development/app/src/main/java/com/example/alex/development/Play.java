@@ -16,17 +16,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
-import com.example.alex.development.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -34,14 +30,13 @@ import java.util.Random;
  */
 public class Play extends AppCompatActivity implements View.OnTouchListener {
 
-    ArrayList<Ball> ball = new ArrayList<Ball>();
-    int numOfBall = 10;
+    ArrayList<Ball> ball = new ArrayList<>();
+    int numOfBall = 20;
     int userScore = 0;
-    private final int secondConv = 1000;
-    private final int converter = 60;
+
     Drawing display;
     float touchX, touchY;
-    boolean touched;
+    int gameBall;
     boolean overlap;
     String minAndSecs;
 
@@ -52,9 +47,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         final CounterClass timer = new CounterClass(50000, 1000);
         timer.start();
         overlap = false;
+        Random r = new Random();
+
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg;
-            Random r = new Random();
             int color = r.nextInt(3) + 1;
 
             if (color == 1) {
@@ -66,9 +62,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
             touchX = 0;
             touchY = 0;
-            ball.add(new Ball(ballimg));
+            ball.add(new Ball(ballimg, color));
             ball.get(i).ballInit();
         }
+        gameBall = r.nextInt(3) + 1;
         display = new Drawing(this);
         display.setOnTouchListener(this);
         setContentView(display);
@@ -91,19 +88,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
      */
     public String increaseScore(String scoreBoard) {
         int incrementScore = 100;
-
         userScore += incrementScore;
-        scoreBoard = scoreBoard.substring(0, 7) + userScore; //five characters in Score:;
+        if(scoreBoard.length() > 6)
+            scoreBoard = scoreBoard.substring(0, 7) + userScore; //five characters in Score:;
+        else
+            scoreBoard = "Did not Load text Properly";
         return scoreBoard;
     }
 
-    /**
-     * This method displays the given quantity value on the screen.
-     */
-    private void displayScore(int number) {
-        TextView quantityTextView = (TextView) findViewById(R.id.Score_Keeper);
-        quantityTextView.setText("" + number);
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -135,15 +127,18 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         //Executes Tick every countdownInterval in this case interval is 1 second
         public void onTick(long millisRemaining) {
+            final int secondConv = 1000;
+            final int converter = 60;
             long Tempseconds = millisRemaining / secondConv;
             long minutes = Tempseconds / converter;
             long seconds = (Tempseconds % converter);
-            minAndSecs = String.format("Timer: %02d:%02d", minutes, seconds);
+            minAndSecs = String.format(Locale.US, "Timer: %02d:%02d", minutes, seconds);
 
         }
+
         //Executed OnFinish once only when timer reaches 0
         public void onFinish() {
-            minAndSecs = String.format("Timer: 00:00");
+            minAndSecs = "Timer: 00:00";
         }
     }
 
@@ -242,16 +237,35 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
                     changeBallPosition(ball.get(i), canvas);
                 }
-                    canvas.drawText(scoreBoard, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
-                    canvas.drawText(minAndSecs, 200, 64, textEdit);
+                canvas.drawText(scoreBoard, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
+                canvas.drawText(minAndSecs, 200, 64, textEdit);
+                //ARbitrary defined colors to number
+                final int red = 1;
+                final int blue = 2;
+                final int green = 3;
+                Bitmap img;
+                    switch (gameBall){
+                        case red:
+                            img = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                            break;
+                        case blue:
+                            img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                            break;
+                        case green:
+                            img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                            break;
+                        default:
+                            img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                    }
+                canvas.drawBitmap(img, canvas.getWidth()/3, 0, null);
                 ourHolder.unlockCanvasAndPost(canvas);
             }
         }
 
+
         public boolean onTouchBall(ArrayList<Ball> ball, int i) {
             boolean status = false;
-            if(!overlap)
-            {
+            if (!overlap) {
                 overlap = true;
                 status = true;
                 ball.remove(i);
@@ -261,7 +275,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         //Decides whether the border case is possible then changes the position of
         //the ball by SpeedY and SpeedX
-        public void changeBallPosition(Ball ball, Canvas canvas){
+        public void changeBallPosition(Ball ball, Canvas canvas) {
             ball.move(canvas.getWidth(), canvas.getHeight());
             ball.setPositionY(ball.speedY);
             ball.setPositionX(ball.speedX);

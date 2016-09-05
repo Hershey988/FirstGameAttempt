@@ -12,22 +12,25 @@ public class Ball extends AppCompatActivity {
 
     private int posX;
     private int posY;
+    private int color;   //Red is 1 Blue is 2 Green is 3
     private Bitmap ballImg;
     int speedX;
     int speedY;
 
-    public Ball(Bitmap image) {
+    public Ball(Bitmap image, int ballColor) {
         ballInit();
         setImage(image);
         Random r = new Random();
         speedX = r.nextInt(10);
         speedY = r.nextInt(10);
+        color = ballColor;
 
         if(speedX == 0 && speedY == 0){
             speedX = 1;
             speedY = 1;
         }
     }
+
 
     public void ballInit(){
         Random r = new Random();
@@ -59,6 +62,10 @@ public class Ball extends AppCompatActivity {
 
     public int getPositionY() {
         return posY;
+    }
+
+    public int getBallColor(){
+        return color;
     }
 
     //uses the width and height of our screen display
