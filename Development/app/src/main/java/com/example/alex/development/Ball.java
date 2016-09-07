@@ -71,13 +71,13 @@ public class Ball extends AppCompatActivity {
     //uses the width and height of our screen display
     public void move(int width, int height){
         int radius = ballImg.getWidth() / 2;
-        int buffer = 90;
+        int buffer = 100;
 
         //in X direction
         if((posX+radius) >= width-buffer){
             speedX = -1 * speedX;
         }
-        else if((posX-radius) <= -buffer){
+        else if((posX-radius) <= 0-buffer){
             speedX = Math.abs(speedX);
         }
 
@@ -85,8 +85,8 @@ public class Ball extends AppCompatActivity {
         if((posY+radius) >= height - buffer){
             speedY = -1 * speedY;
         }
-        else if((posY-radius) <= - buffer){
-            speedY = Math.abs(speedY);
+        else if((posY-radius) <= ((radius * 2) + 10 - buffer)){  //So here I had to also take into account the top part of the display
+            speedY = Math.abs(speedY);                           // where we show which ball to get rid off. so i multiply the radius by 2 and add 10pixels more so it looks nice.
         }
     }
 }
