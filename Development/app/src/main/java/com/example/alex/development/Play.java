@@ -1,6 +1,10 @@
 package com.example.alex.development;
 
+import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -24,6 +28,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+import java.util.logging.Handler;
 
 /**
  * This app displays an order form to order coffee.
@@ -31,33 +36,36 @@ import java.util.Random;
 public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     ArrayList<Ball> ball = new ArrayList<>();
-    int numOfBall = 20;
+    int numOfBall = 15;
     int userScore = 0;
 
     Drawing display;
     float touchX, touchY;
     int gameBall;
+    int spriteMove = 0;
+    long timeRemaining = 0;
     boolean overlap;
-    String minAndSecs;
+    String minAndSecs = "No Time Started";
+    CounterClass timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
-        final CounterClass timer = new CounterClass(50000, 1000);
+        timer = new CounterClass(50000, 1000);
         timer.start();
+
         overlap = false;
         Random r = new Random();
 
         for (int i = 0; i < numOfBall; i++) {
-            Bitmap ballimg;
+            Bitmap ballimg = null;
             int color = r.nextInt(3) + 1;
 
             if (color == 1) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
             } else if (color == 2) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-            } else {
+            } else if (color == 3) {
                 ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
             }
             touchX = 0;
@@ -88,22 +96,16 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
      */
     public String increaseScore(String scoreBoard) {
         int incrementScore = 100;
-        userScore += incrementScore;
-        if(scoreBoard.length() > 6)
+        if (scoreBoard.length() > 6){
+            userScore += incrementScore;
             scoreBoard = scoreBoard.substring(0, 7) + userScore; //five characters in Score:;
-        else
-            scoreBoard = "Did not Load text Properly";
+        }
         return scoreBoard;
     }
 
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        try {
-            Thread.sleep(16);       // 1000/ 16 = 60 FPS
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         switch (motionEvent.getAction()) {
 
             case MotionEvent.ACTION_DOWN:
@@ -132,9 +134,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             long Tempseconds = millisRemaining / secondConv;
             long minutes = Tempseconds / converter;
             long seconds = (Tempseconds % converter);
+            timeRemaining = millisRemaining;
             minAndSecs = String.format(Locale.US, "Timer: %02d:%02d", minutes, seconds);
-
         }
+
 
         //Executed OnFinish once only when timer reaches 0
         public void onFinish() {
@@ -181,21 +184,38 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
 
+            String scoreBoard = "Score: ";
         @Override
         public void run() {
-            String scoreBoard = "Score: ";
             Paint textEdit = new Paint();
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
+            Bitmap backGND = BitmapFactory.decodeResource(getResources(),R.drawable.sprite);
+            int FrameRate = 30;
+            int FPS = 1000 / FrameRate;
 
             while (isRunning) {
                 if (!ourHolder.getSurface().isValid())
                     continue;
+                long delay = System.currentTimeMillis();
+
 
                 Canvas canvas = ourHolder.lockCanvas();
-                canvas.drawColor(0xffffffff);
-                int imgWidth, imgHeight;
+                canvas.drawColor(0xffffffff);   //clears canvas
 
+                int centerX = canvas.getWidth();
+                int centerY = canvas.getHeight();
+               // Rect frame = new Rect(spriteMove,0, 800 + spriteMove, backGND.getHeight());
+               // Rect spriteFrame = new Rect(0,0,centerX,centerY);
+                spriteMove += 800;
+                if(spriteMove >= backGND.getWidth())
+                {
+                    spriteMove = 0;
+                }
+
+               // canvas.drawBitmap(backGND, frame, spriteFrame, null);
+
+                int imgWidth, imgHeight;
                 for (int i = 0; i < ball.size(); i++) {
 
                     //gets the dimensions of the ball plus position
@@ -221,14 +241,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                             if (ballX < touchX && touchX < (ballX + imgWidth) &&
                                     ballY < touchY && touchY < (ballY + imgHeight)) {
                                 if (onTouchBall(ball, j)) {
-                                    scoreBoard = increaseScore(scoreBoard);
                                     break;
                                 }
                             }
                         }
 
                         if (onTouchBall(ball, i)) {
-                            scoreBoard = increaseScore(scoreBoard);
                             i--;
                             continue;
                         }
@@ -244,22 +262,45 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 final int blue = 2;
                 final int green = 3;
                 Bitmap img;
-                    switch (gameBall){
-                        case red:
-                            img = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-                            break;
-                        case blue:
-                            img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-                            break;
-                        case green:
-                            img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-                            break;
-                        default:
-                            img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-                    }
-                canvas.drawBitmap(img, canvas.getWidth()/3, 0, null);
+                switch (gameBall) {
+                    case red:
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                        break;
+                    case blue:
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                        break;
+                    case green:
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                        break;
+                    default:
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                }
+                canvas.drawBitmap(img, centerX/2 - (img.getWidth()/2 ), 0, null);
+
+                long stop = System.currentTimeMillis();
+                int loadTime = (int) (stop - delay) ;
+                try {
+                    if(loadTime < FPS)
+                        Thread.sleep(FPS - loadTime);
+                    else
+                        Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 ourHolder.unlockCanvasAndPost(canvas);
+
             }
+        }
+
+        public String equalBalls(String score, Ball ball) {
+            if (ball.getBallColor() == gameBall) {
+                score = increaseScore(score);
+            }
+            else{
+                //;
+                score += ball.getBallColor();
+            }
+            return score;
         }
 
 
@@ -268,10 +309,18 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             if (!overlap) {
                 overlap = true;
                 status = true;
+                if(ball.get(i).getBallColor() == gameBall)
+                {
+                    scoreBoard = increaseScore(scoreBoard);
+                }
+                else{
+
+                }
                 ball.remove(i);
             }
             return status;
         }
+
 
         //Decides whether the border case is possible then changes the position of
         //the ball by SpeedY and SpeedX
