@@ -12,7 +12,7 @@ public class Ball extends AppCompatActivity {
 
     private int posX;
     private int posY;
-    private int color;   //Red is 1 Blue is 2 Green is 3
+    int color;   //Red is 1 Blue is 2 Green is 3
     private Bitmap ballImg;
     int speedX;
     int speedY;
@@ -77,7 +77,7 @@ public class Ball extends AppCompatActivity {
         if((posX+radius) >= width-buffer){
             speedX = -1 * speedX;
         }
-        else if((posX-radius) <= 0-buffer){
+        else if((posX - radius) <= 0-buffer){
             speedX = Math.abs(speedX);
         }
 
