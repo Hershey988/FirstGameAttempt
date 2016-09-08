@@ -78,5 +78,16 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/greenball" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/BallOne"
+        android:layout_toEndOf="@+id/BallOne"
+        android:layout_marginBottom="69dp"
+        android:onClick="playPressed" />
+
 
 </RelativeLayout>

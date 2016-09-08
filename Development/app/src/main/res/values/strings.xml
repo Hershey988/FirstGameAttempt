@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Development</string>
+    <string name="PlayAct">com.example.alex.development.Play</string>
 </resources>

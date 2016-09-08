@@ -18,6 +18,12 @@ public class Menu extends ListActivity{
     String classes[] = {"Play", "Settings", "PlaySurface"};
     MediaPlayer ourSong;
     boolean music;  //Checks if we should play music
+
+    public void playPressd(){
+        Intent intent = new Intent(getApplicationContext(), Play.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
