@@ -22,12 +22,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlaySurface" android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.example.alex.development.PLAYSURFACE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".Settings" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.example.alex.development.SETTINGS" />

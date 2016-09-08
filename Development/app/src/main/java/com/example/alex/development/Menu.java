@@ -17,17 +17,12 @@ import android.widget.ListView;
  * Created by Alex on 8/31/2016.
  */
 public class Menu extends Activity{
-    String classes[] = {"Play", "Settings", "PlaySurface"};
+    String classes[] = {"Play", "Settings"};
     MediaPlayer ourSong;
     boolean music;  //Checks if we should play music
 
     public void playPress(View view) {
         Intent intent = new Intent(getApplicationContext(), Play.class);
-        startActivity(intent);
-    }
-
-    public void playSurfacePress(View view) {
-        Intent intent = new Intent(getApplicationContext(), PlaySurface.class);
         startActivity(intent);
     }
 

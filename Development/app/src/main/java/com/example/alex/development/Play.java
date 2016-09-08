@@ -197,8 +197,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
             textEdit.setColor(0xffffffff);
-            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula);
-            int FrameRate = 30;
+          int FrameRate = 30;
             int FPS = 1000 / FrameRate;
 
             while (isRunning) {
@@ -212,8 +211,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 // canvas.drawBitmap(backGND, 0, 0, null);
                 int centerX = canvas.getWidth();
                 int centerY = canvas.getHeight();
-                Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
-                Rect spriteFrame = new Rect(0, 0, centerX, centerY);
+
 /*
                 spriteMove += 800;
                 if(spriteMove >= backGND.getWidth())
@@ -221,7 +219,13 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     spriteMove = 0;
                 }
 * */
-                canvas.drawBitmap(backGND, frame, spriteFrame, null);
+
+                        Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula);
+
+                        Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
+                        Rect spriteFrame = new Rect(0, 0, centerX, centerY);
+                        canvas.drawBitmap(backGND, frame, spriteFrame, null);
+
 
                 int imgWidth, imgHeight;
                 for (int i = 0; i < ball.size(); i++) {
@@ -300,7 +304,20 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
         }
 
+        public void background(Canvas canvas) {
+            Thread background = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            background.setDaemon(true);
+            background.start();
+
+        }
+
         public String equalBalls(String score, Ball ball) {
+
             if (ball.getBallColor() == gameBall) {
                 score = increaseScore(score);
             } else {
@@ -317,14 +334,17 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 overlap = true;
                 status = true;
                 if (ball.get(i).getBallColor() == gameBall) {
-                    scoreBoard = increaseScore(scoreBoard);
+                    Thread scoreThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            scoreBoard = increaseScore(scoreBoard);
+                        }
+                    });
+                    scoreThread.setDaemon(true);
+                    scoreThread.start();
                 } else {
                     changeTime();
-
-
-
                 }
-
                 ball.remove(i);
             }
             return status;
@@ -354,9 +374,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         //Decides whether the border case is possible then changes the position of
         //the ball by SpeedY and SpeedX
         public void changeBallPosition(Ball ball, Canvas canvas) {
-            ball.move(canvas.getWidth(), canvas.getHeight());
-            ball.setPositionY(ball.speedY);
-            ball.setPositionX(ball.speedX);
+                    ball.move(canvas.getWidth(), canvas.getHeight());
+                    ball.setPositionY(ball.speedY);
+                    ball.setPositionX(ball.speedX);
+
         }
 
 
