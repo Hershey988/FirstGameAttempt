@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 
@@ -24,11 +25,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
-import java.util.logging.Handler;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.LogRecord;
+
 
 /**
  * This app displays an order form to order coffee.
@@ -47,15 +51,16 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     boolean overlap;
     String minAndSecs = "No Time Started";
     CounterClass timer;
+    private Handler mUiHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         timer = new CounterClass(50000, 1000);
         timer.start();
-
         overlap = false;
         Random r = new Random();
+
 
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
@@ -96,7 +101,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
      */
     public String increaseScore(String scoreBoard) {
         int incrementScore = 100;
-        if (scoreBoard.length() > 6){
+        if (scoreBoard.length() > 6) {
             userScore += incrementScore;
             scoreBoard = scoreBoard.substring(0, 7) + userScore; //five characters in Score:;
         }
@@ -184,13 +189,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
 
-            String scoreBoard = "Score: ";
+        String scoreBoard = "Score: ";
+
         @Override
         public void run() {
             Paint textEdit = new Paint();
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
-            Bitmap backGND = BitmapFactory.decodeResource(getResources(),R.drawable.sprite);
+            textEdit.setColor(0xffffffff);
+            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula);
             int FrameRate = 30;
             int FPS = 1000 / FrameRate;
 
@@ -202,18 +209,19 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
                 Canvas canvas = ourHolder.lockCanvas();
                 canvas.drawColor(0xffffffff);   //clears canvas
-
+                // canvas.drawBitmap(backGND, 0, 0, null);
                 int centerX = canvas.getWidth();
                 int centerY = canvas.getHeight();
-               // Rect frame = new Rect(spriteMove,0, 800 + spriteMove, backGND.getHeight());
-               // Rect spriteFrame = new Rect(0,0,centerX,centerY);
+                Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
+                Rect spriteFrame = new Rect(0, 0, centerX, centerY);
+/*
                 spriteMove += 800;
                 if(spriteMove >= backGND.getWidth())
                 {
                     spriteMove = 0;
                 }
-
-               // canvas.drawBitmap(backGND, frame, spriteFrame, null);
+* */
+                canvas.drawBitmap(backGND, frame, spriteFrame, null);
 
                 int imgWidth, imgHeight;
                 for (int i = 0; i < ball.size(); i++) {
@@ -275,12 +283,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     default:
                         img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
                 }
-                canvas.drawBitmap(img, centerX/2 - (img.getWidth()/2 ), 0, null);
+                canvas.drawBitmap(img, centerX / 2 - (img.getWidth() / 2), 0, null);
 
                 long stop = System.currentTimeMillis();
-                int loadTime = (int) (stop - delay) ;
+                int loadTime = (int) (stop - delay);
                 try {
-                    if(loadTime < FPS)
+                    if (loadTime < FPS)
                         Thread.sleep(FPS - loadTime);
                     else
                         Thread.sleep(0);
@@ -295,8 +303,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         public String equalBalls(String score, Ball ball) {
             if (ball.getBallColor() == gameBall) {
                 score = increaseScore(score);
-            }
-            else{
+            } else {
                 //;
                 score += ball.getBallColor();
             }
@@ -309,19 +316,41 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             if (!overlap) {
                 overlap = true;
                 status = true;
-                if(ball.get(i).getBallColor() == gameBall)
-                {
+                if (ball.get(i).getBallColor() == gameBall) {
                     scoreBoard = increaseScore(scoreBoard);
-                }
-                else{
+                } else {
+                    changeTime();
+
+
 
                 }
+
                 ball.remove(i);
             }
             return status;
         }
 
+        public void changeTime() {
+            Thread myThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mUiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            long pentaly = 5000;
+                            timer.cancel();
+                            timer = new CounterClass(timeRemaining - pentaly, 1000);
+                            timer.start();
+                        }
+                    });
+                }
+            });
+            myThread.start();
+        }
 
+
+
+        }
         //Decides whether the border case is possible then changes the position of
         //the ball by SpeedY and SpeedX
         public void changeBallPosition(Ball ball, Canvas canvas) {
@@ -333,4 +362,3 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     }
 
-}

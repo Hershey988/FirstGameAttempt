@@ -80,7 +80,7 @@ public class Menu extends Activity{
     @Override
     protected void onPause() {
         super.onPause();
-        ourSong.pause();
+       // ourSong.pause();
 
     }
 }
