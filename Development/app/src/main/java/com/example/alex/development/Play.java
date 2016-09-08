@@ -40,7 +40,6 @@ import java.util.logging.LogRecord;
 public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     ArrayList<Ball> ball = new ArrayList<>();
-    int numOfBall = 15;
     int userScore = 0;
 
     Drawing display;
@@ -61,7 +60,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         overlap = false;
         Random r = new Random();
 
-
+        int numOfBall = 20;
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
             int color = r.nextInt(3) + 1;
@@ -200,6 +199,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula);
             int FrameRate = 30;
             int FPS = 1000 / FrameRate;
+            Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
 
             while (isRunning) {
                 if (!ourHolder.getSurface().isValid())
@@ -208,11 +208,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
 
                 Canvas canvas = ourHolder.lockCanvas();
-                canvas.drawColor(0xffffffff);   //clears canvas
                 // canvas.drawBitmap(backGND, 0, 0, null);
                 int centerX = canvas.getWidth();
                 int centerY = canvas.getHeight();
-                Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
                 Rect spriteFrame = new Rect(0, 0, centerX, centerY);
 /*
                 spriteMove += 800;
@@ -222,7 +220,6 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 }
 * */
                 canvas.drawBitmap(backGND, frame, spriteFrame, null);
-
                 int imgWidth, imgHeight;
                 for (int i = 0; i < ball.size(); i++) {
 
@@ -320,9 +317,6 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     scoreBoard = increaseScore(scoreBoard);
                 } else {
                     changeTime();
-
-
-
                 }
 
                 ball.remove(i);
@@ -349,16 +343,16 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
 
-
-        }
-        //Decides whether the border case is possible then changes the position of
-        //the ball by SpeedY and SpeedX
-        public void changeBallPosition(Ball ball, Canvas canvas) {
-            ball.move(canvas.getWidth(), canvas.getHeight());
-            ball.setPositionY(ball.speedY);
-            ball.setPositionX(ball.speedX);
-        }
-
-
     }
+
+    //Decides whether the border case is possible then changes the position of
+    //the ball by SpeedY and SpeedX
+    public void changeBallPosition(Ball ball, Canvas canvas) {
+        ball.move(canvas.getWidth(), canvas.getHeight());
+        ball.setPositionY(ball.speedY);
+        ball.setPositionX(ball.speedX);
+    }
+
+
+}
 
