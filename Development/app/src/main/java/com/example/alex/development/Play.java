@@ -221,6 +221,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 * */
                 canvas.drawBitmap(backGND, frame, spriteFrame, null);
                 int imgWidth, imgHeight;
+                int counter = 0;
                 for (int i = 0; i < ball.size(); i++) {
 
                     //gets the dimensions of the ball plus position
@@ -229,6 +230,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     int ballX = ball.get(i).getPositionX();
                     int ballY = ball.get(i).getPositionY();
                     imgHeight = ball.get(i).getImage().getHeight();
+                    if (ball.get(i).getBallColor() == gameBall)
+                    {
+                        counter++;
+                    }
 
                     // check if ball is in range of touch
                     if (ballX < touchX && touchX < (ballX + imgWidth) &&
@@ -292,6 +297,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                gameStatus(counter);
                 ourHolder.unlockCanvasAndPost(canvas);
 
             }
@@ -307,7 +314,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             return score;
         }
 
+        public void gameStatus(int balls) {
+            if(balls == 0) {
+                // win game show score
+            }
+            if(timeRemaining < 10 ){
+                // lose game show score
+            }
 
+        }
         public boolean onTouchBall(ArrayList<Ball> ball, int i) {
             boolean status = false;
             if (!overlap) {
