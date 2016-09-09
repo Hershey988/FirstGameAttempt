@@ -16,6 +16,8 @@ import android.widget.ListView;
 /**
  * Created by Alex on 8/31/2016.
  */
+
+//Classes list Play, Settings,
 public class Menu extends Activity{
     String classes[] = {"Play", "Settings"};
     MediaPlayer ourSong;
@@ -45,22 +47,6 @@ public class Menu extends Activity{
         }
     }
 
-    /*
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        String currentClass = classes[position];
-        try{
-            Class ourClass = Class.forName("com.example.alex.development." + currentClass);
-            Intent myIntent = new Intent(Menu.this, ourClass);
-            startActivity(myIntent);
-        } catch (ClassNotFoundException e){
-            e.printStackTrace();
-        }
-
-    }
-    * */
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,7 +61,7 @@ public class Menu extends Activity{
     @Override
     protected void onPause() {
         super.onPause();
-       // ourSong.pause();
+        ourSong.pause();
 
     }
 }

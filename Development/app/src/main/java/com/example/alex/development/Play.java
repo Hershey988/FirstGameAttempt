@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogRecord;
@@ -146,6 +148,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         //Executed OnFinish once only when timer reaches 0
         public void onFinish() {
             minAndSecs = "Timer: 00:00";
+            timeRemaining = 0;
         }
     }
 
@@ -170,14 +173,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         public void pause() {
             isRunning = false;
-            while (true) {
+
                 try {
                     ourThread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                break;
-            }
             ourThread = null;
         }
 
@@ -196,10 +197,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
             textEdit.setColor(0xffffffff);
-            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula);
+            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula_animate);
             int FrameRate = 30;
             int FPS = 1000 / FrameRate;
-            Rect frame = new Rect(0, 0, backGND.getWidth(), backGND.getHeight());
 
             while (isRunning) {
                 if (!ourHolder.getSurface().isValid())
@@ -208,17 +208,19 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
 
                 Canvas canvas = ourHolder.lockCanvas();
-                // canvas.drawBitmap(backGND, 0, 0, null);
+                canvas.drawColor(-1); // -1 is white
+
                 int centerX = canvas.getWidth();
                 int centerY = canvas.getHeight();
+                Rect frame = new Rect(0, spriteMove, backGND.getWidth(),400 + spriteMove);
                 Rect spriteFrame = new Rect(0, 0, centerX, centerY);
-/*
-                spriteMove += 800;
-                if(spriteMove >= backGND.getWidth())
+
+                spriteMove += 20;
+                if(spriteMove >= backGND.getHeight() - 400)
                 {
-                    spriteMove = 0;
+                    spriteMove = 20;
                 }
-* */
+
                 canvas.drawBitmap(backGND, frame, spriteFrame, null);
                 int imgWidth, imgHeight;
                 int counter = 0;
@@ -298,7 +300,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     e.printStackTrace();
                 }
 
-                gameStatus(counter);
+                gameStatus(counter, canvas);
                 ourHolder.unlockCanvasAndPost(canvas);
 
             }
@@ -314,11 +316,22 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             return score;
         }
 
-        public void gameStatus(int balls) {
+        public void gameStatus(int balls, Canvas canvas) {
+            String results = scoreBoard.substring(6, scoreBoard.length());
             if(balls == 0) {
                 // win game show score
+                Log.i("INFORMATION FOR SCORE", results);
+
+                Intent openScore = new Intent(getApplicationContext(), Score.class);
+                openScore.putExtra("Score", results);
+                startActivity(openScore);
             }
+                String time = Long.toString(timeRemaining);
             if(timeRemaining < 10 ){
+                Log.i("Amount of time left ", time);
+                Intent openLost = new Intent(getApplicationContext(), Lose.class);
+                openLost.putExtra("Score", results);
+                startActivity(openLost);
                 // lose game show score
             }
 
