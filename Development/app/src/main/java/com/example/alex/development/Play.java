@@ -107,7 +107,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     }
 
     /**
-     * This method is called when the order button is clicked.
+     * Increases our ScoreBoard by 100
      */
     public String increaseScore(String scoreBoard) {
         int incrementScore = 100;
@@ -193,7 +193,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
 
-        String scoreBoard = "Score: ";
+        String scoreBoard = "Score: 000";
 
         @Override
         public void run() {
