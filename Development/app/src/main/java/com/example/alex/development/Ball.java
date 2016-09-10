@@ -10,34 +10,36 @@ import java.util.Random;
  */
 public class Ball extends AppCompatActivity {
 
-    private int posX;
-    private int posY;
-    int color;   //Red is 1 Blue is 2 Green is 3
-    private Bitmap ballImg;
+    public final int color;   //Red is 1 Blue is 2 Green is 3
     int speedX;
     int speedY;
+
+    private int posX;
+    private int posY;
+    private Bitmap ballImg;
 
     public Ball(Bitmap image, int ballColor) {
         ballInit();
         setImage(image);
         Random r = new Random();
-        speedX = r.nextInt(10);
-        speedY = r.nextInt(10);
+        speedX = r.nextInt(10) + 1; // + 1 prevents the possibility of getting 0 speed
+        speedY = r.nextInt(10) + 1; // + 1 prevents the possibility of getting 0 speed
         color = ballColor;
-
-        if(speedX == 0 && speedY == 0){
-            speedX = 1;
-            speedY = 1;
-        }
     }
 
 
+    /*
+    * Location spawn of the ball is initialized here
+    * In future we should make the direction randomized as well
+    *
+    * */
     public void ballInit(){
         Random r = new Random();
-        int range = 500;
+        int range = 400;
+        int title_buffer = 100; //Accounts for the top part of the screen
 
-        posX = r.nextInt(range);
-        posY = r.nextInt(range);
+        posX = r.nextInt(range) + title_buffer;
+        posY = r.nextInt(range) + title_buffer;
     }
 
     public void setImage(Bitmap image) {

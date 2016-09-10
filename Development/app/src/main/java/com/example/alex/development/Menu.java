@@ -54,6 +54,7 @@ public class Menu extends Activity{
         music = getPrefs.getBoolean("isMusicOn", true);
         if(music)
         {
+            ourSong = MediaPlayer.create(Menu.this, R.raw.jazzelevator);
             ourSong.start();
         }
     }
