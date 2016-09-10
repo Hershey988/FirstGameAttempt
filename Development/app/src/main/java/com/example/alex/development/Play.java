@@ -36,22 +36,33 @@ import java.util.Random;
 public class Play extends AppCompatActivity implements View.OnTouchListener {
 
     ArrayList<Ball> ball = new ArrayList<>();
-    int userScore = 0;
 
     Drawing display;
     float touchX, touchY;
     private static int game_ball_color;
 
-    long timeRemaining = 0;
-
     String minAndSecs = "No Time Started";
-    CounterClass timer;
-    private static final Handler mUiHandler = new Handler();
+    long timeRemaining = 0;
+    int userScore = 0;
 
+    private static final Handler mUiHandler = new Handler();
+    final int RED = 1;
+    final int GREEN = 2;
+    final int BLUE = 3;
+    CounterClass timer;
+
+    /*
+    * Set's up the timer, the # of balls in game, the balls colors
+    * creates instances of balls, initializes game_ball_color,
+    * touch listener, and content view
+    * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        timer = new CounterClass(5000, 1000);
+        final long starting_time = 50000;
+        final long one_second_interval = 1000;
+
+        timer = new CounterClass(starting_time, one_second_interval);
         timer.start();
 
         Random r = new Random();
@@ -59,24 +70,28 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         int numOfBall = 20;
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
-            int color = r.nextInt(3) + 1;
+            int color = r.nextInt(3) + 1; // there are 3 colors
 
-            if (color == 1) {
-                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-            } else if (color == 2) {
-                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-            } else if (color == 3) {
-                ballimg = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-            }
-            touchX = 0;
-            touchY = 0;
-            ball.add(new Ball(ballimg, color));
-            ball.get(i).ballInit();
+            setBall(ballimg, color);
         }
+
         game_ball_color = r.nextInt(3) + 1;
         display = new Drawing(this);
-        display.setOnTouchListener(this);
+        display.setOnTouchListener(this);       //initiates the onTouchListener
         setContentView(display);
+    }
+
+
+    //Sets up a new instance of ball
+    public void setBall(Bitmap ball_image, int color) {
+        if (color == RED) {
+            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+        } else if (color == GREEN) {
+            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+        } else if (color == BLUE) {
+            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+        }
+        ball.add(new Ball(ball_image, color));
     }
 
     @Override
@@ -111,6 +126,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 touchX = motionEvent.getX();
                 touchY = motionEvent.getY();
                 break;
+            default:
+                touchX = touchY = 0;
         }
         return true;
     }
@@ -149,7 +166,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     public class Drawing extends SurfaceView implements Runnable {
         SurfaceHolder ourHolder;
         Thread ourThread = null;
-        boolean isRunning = false;
+        boolean game_is_running = false;
 
         public Drawing(Context context) {
             super(context);
@@ -159,18 +176,18 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
         public void pause() {
-            isRunning = false;
+            game_is_running = false;
 
-                try {
-                    ourThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                ourThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ourThread = null;
         }
 
         public void resume() {
-            isRunning = true;
+            game_is_running = true;
             ourThread = new Thread(this);
             ourThread.start();
         }
@@ -186,10 +203,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             textEdit.setColor(0xffffffff);
             Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula_animate);
 
-            int image_clip = 0;
-            int next_clip  = 20;
+            int image_clip = 0; // Show's one clip of an image example image 1 in |1|2|3|4|5|
+            final int next_clip = 20; //distance of the next image clip example from image 1 to 2 in |1|2|3|4|5|
 
-            while (isRunning) {
+            while (game_is_running) {
                 if (!ourHolder.getSurface().isValid())
                     continue;
                 long delay = System.currentTimeMillis();
@@ -199,12 +216,11 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
                 int centerX = canvas.getWidth();
                 int centerY = canvas.getHeight();
-                Rect frame = new Rect(0, image_clip, backGND.getWidth(),400 + image_clip);
+                Rect frame = new Rect(0, image_clip, backGND.getWidth(), 400 + image_clip);
                 Rect spriteFrame = new Rect(0, 0, centerX, centerY);
 
                 image_clip += next_clip;
-                if(image_clip >= backGND.getHeight() - 400)
-                {
+                if (image_clip >= backGND.getHeight() - 400) {
                     image_clip = next_clip;
                 }
 
@@ -219,8 +235,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     int ballX = ball.get(i).getPositionX();
                     int ballY = ball.get(i).getPositionY();
                     imgHeight = ball.get(i).getImage().getHeight();
-                    if (ball.get(i).getBallColor() == game_ball_color)
-                    {
+                    if (ball.get(i).getBallColor() == game_ball_color) {
                         counter++;
                     }
 
@@ -260,18 +275,18 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 canvas.drawText(minAndSecs, 200, 64, textEdit);
                 //ARbitrary defined colors to number
                 final int red = 1;
-                final int blue = 2;
-                final int green = 3;
+                final int green = 2;
+                final int blue = 3;
                 Bitmap img;
                 switch (game_ball_color) {
                     case red:
                         img = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
                         break;
-                    case blue:
-                        img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-                        break;
                     case green:
                         img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                        break;
+                    case blue:
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
                         break;
                     default:
                         img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
@@ -298,21 +313,20 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         private void game_FPS(int loadTime) {
             int FrameRate = 30;
             int frame_per_cycle = 1000 / FrameRate; //gives the time per frame cycle
-            int load_FPS= 1000 / loadTime;
+            int load_FPS = 1000 / loadTime;
             String gameFPS = null;
 
-                if (loadTime < frame_per_cycle) {
-                    try {
-                        Thread.sleep(frame_per_cycle - loadTime);
-                    }
-                    catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
-                    gameFPS = Integer.toString(FrameRate);
+            if (loadTime < frame_per_cycle) {
+                try {
+                    Thread.sleep(frame_per_cycle - loadTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                if(gameFPS == null)
-                    gameFPS = Integer.toString(load_FPS);
-                Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
+                gameFPS = Integer.toString(FrameRate);
+            }
+            if (gameFPS == null)
+                gameFPS = Integer.toString(load_FPS);
+            Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
 
         }
 
@@ -325,7 +339,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * */
         public void gameStatus(int balls) {
             String results = scoreBoard.substring(6, scoreBoard.length());
-            if(balls == 0) {
+            if (balls == 0) {
                 // win game show score
                 Log.i("INFORMATION FOR SCORE", results);
 
@@ -333,8 +347,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 openScore.putExtra("Score", results);
                 startActivity(openScore);
             }
-                String time = Long.toString(timeRemaining);
-            if(timeRemaining < 10 ){
+            String time = Long.toString(timeRemaining);
+            if (timeRemaining < 10) {
                 Log.i("Amount of time left ", time);
                 Intent openLost = new Intent(getApplicationContext(), Lose.class);
                 openLost.putExtra("Score", results);
@@ -393,15 +407,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             myThread.start();
         }
 
+        //Decides whether the border case is possible then changes the position of
+        //the ball by SpeedY and SpeedX
+        public void changeBallPosition(Ball ball, Canvas canvas) {
+            ball.move(canvas.getWidth(), canvas.getHeight());
+            ball.setPositionY(ball.speedY);
+            ball.setPositionX(ball.speedX);
+        }
 
-    }
-
-    //Decides whether the border case is possible then changes the position of
-    //the ball by SpeedY and SpeedX
-    public void changeBallPosition(Ball ball, Canvas canvas) {
-        ball.move(canvas.getWidth(), canvas.getHeight());
-        ball.setPositionY(ball.speedY);
-        ball.setPositionX(ball.speedX);
     }
 
 
