@@ -67,7 +67,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         Random r = new Random();
 
-        int numOfBall = 20;
+        int numOfBall = 50;
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
             int color = r.nextInt(3) + 1; // there are 3 colors
@@ -193,7 +193,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
 
-        String scoreBoard = "Score: 000";
+        String scoreBoard = "Score: 0000";
 
         @Override
         public void run() {
@@ -205,6 +205,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
             int image_clip = 0; // Show's one clip of an image example image 1 in |1|2|3|4|5|
             final int next_clip = 20; //distance of the next image clip example from image 1 to 2 in |1|2|3|4|5|
+
+
+            Bitmap img = game_ball_image();
 
             while (game_is_running) {
                 if (!ourHolder.getSurface().isValid())
@@ -225,6 +228,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 }
 
                 canvas.drawBitmap(backGND, frame, spriteFrame, null);
+
                 int imgWidth, imgHeight;
                 int counter = 0;
                 for (int i = 0; i < ball.size(); i++) {
@@ -274,24 +278,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 canvas.drawText(scoreBoard, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
                 canvas.drawText(minAndSecs, 200, 64, textEdit);
                 //ARbitrary defined colors to number
-                final int red = 1;
-                final int green = 2;
-                final int blue = 3;
-                Bitmap img;
-                switch (game_ball_color) {
-                    case red:
-                        img = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-                        break;
-                    case green:
-                        img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-                        break;
-                    case blue:
-                        img = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
-                        break;
-                    default:
-                        img = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-                }
-                canvas.drawBitmap(img, centerX / 2 - (img.getWidth() / 2), 0, null);
+
+                canvas.drawBitmap(img, centerX / 2 - (img.getWidth() / 2), 0, null);    // Draws the game Ball
 
                 long stop = System.currentTimeMillis();
                 int loadTime = (int) (stop - delay);
@@ -304,6 +292,24 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
         /*
+        * Returns the image to the corresponding gameball color
+        * */
+
+        private Bitmap game_ball_image() {
+
+            switch (game_ball_color) {
+                case RED:
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                case GREEN:
+                    return  BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                case BLUE:
+                    return  BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                default:
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+            }
+        }
+
+        /*
         * LoadTime gives the diffence of time for the program to complete one cycle
         * From the top of it's while(gameIsRunning) Loop
         * Sleeps if programming is attempting to run faster then FPS
@@ -311,7 +317,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         *
         * */
         private void game_FPS(int loadTime) {
-            int FrameRate = 30;
+            int FrameRate = 35;
             int frame_per_cycle = 1000 / FrameRate; //gives the time per frame cycle
             int load_FPS = 1000 / loadTime;
             String gameFPS = null;
