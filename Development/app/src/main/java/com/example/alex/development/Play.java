@@ -3,6 +3,7 @@ package com.example.alex.development;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
@@ -51,6 +52,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     final int BLUE = 3;
     CounterClass timer;
 
+    // Music, sound list
+
+
     /*
     * Set's up the timer, the # of balls in game, the balls colors
     * creates instances of balls, initializes game_ball_color,
@@ -64,10 +68,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         timer = new CounterClass(starting_time, one_second_interval);
         timer.start();
-
         Random r = new Random();
 
-        int numOfBall = 50;
+        int numOfBall = 20;
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
             int color = r.nextInt(3) + 1; // there are 3 colors
@@ -118,13 +121,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         return scoreBoard;
     }
 
-
+    boolean overlap = true;
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 touchX = motionEvent.getX();
                 touchY = motionEvent.getY();
+                overlap = true;
                 break;
             default:
                 touchX = touchY = 0;
@@ -200,27 +204,32 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             Paint textEdit = new Paint();
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
-            textEdit.setColor(0xffffffff);
+            textEdit.setColor(0xff000000);  // black
             Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula_animate);
 
             int image_clip = 0; // Show's one clip of an image example image 1 in |1|2|3|4|5|
             final int next_clip = 20; //distance of the next image clip example from image 1 to 2 in |1|2|3|4|5|
 
 
-            Bitmap img = game_ball_image();
 
+            long delay;
+            int centerX, centerY;
+            Bitmap img = game_ball_image();
+            Rect frame, spriteFrame;
+            int imgWidth, imgHeight;
+            int counter;
             while (game_is_running) {
                 if (!ourHolder.getSurface().isValid())
                     continue;
-                long delay = System.currentTimeMillis();
-                boolean overlap = false;
+                delay = System.currentTimeMillis();
+
                 Canvas canvas = ourHolder.lockCanvas();
                 canvas.drawColor(-1); // -1 is white
 
-                int centerX = canvas.getWidth();
-                int centerY = canvas.getHeight();
-                Rect frame = new Rect(0, image_clip, backGND.getWidth(), 400 + image_clip);
-                Rect spriteFrame = new Rect(0, 0, centerX, centerY);
+                centerX = canvas.getWidth();
+                centerY = canvas.getHeight();
+                frame = new Rect(0, image_clip, backGND.getWidth(), 400 + image_clip);
+                spriteFrame = new Rect(0, 0, centerX, centerY);
 
                 image_clip += next_clip;
                 if (image_clip >= backGND.getHeight() - 400) {
@@ -229,9 +238,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
                 canvas.drawBitmap(backGND, frame, spriteFrame, null);
 
-                int imgWidth, imgHeight;
-                int counter = 0;
+
+                counter = 0;
                 for (int i = 0; i < ball.size(); i++) {
+                    if (ball.get(i).getBallColor() == game_ball_color) {
+                        counter++;
+                    }
 
                     //gets the dimensions of the ball plus position
                     //to check if we touched the ball area.
@@ -239,15 +251,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     int ballX = ball.get(i).getPositionX();
                     int ballY = ball.get(i).getPositionY();
                     imgHeight = ball.get(i).getImage().getHeight();
-                    if (ball.get(i).getBallColor() == game_ball_color) {
-                        counter++;
-                    }
 
                     // check if ball is in range of touch
                     if (ballX < touchX && touchX < (ballX + imgWidth) &&
                             ballY < touchY && touchY < (ballY + imgHeight)) {
-
-
                         //Checks if there is an image above the current one pressed
                         //if so remove the top, else continue to remove i
                         for (int j = (ball.size() - 1); j > i; j--) {
@@ -255,18 +262,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                             ballX = ball.get(j).getPositionX();
                             ballY = ball.get(j).getPositionY();
                             imgHeight = ball.get(j).getImage().getHeight();
-
                             if (ballX < touchX && touchX < (ballX + imgWidth) &&
                                     ballY < touchY && touchY < (ballY + imgHeight)) {
-                                if (onTouchBall(ball, j, overlap)) {
-                                    overlap = true;
+                                if (onTouchBall(ball, j)) {
                                     break;
                                 }
                             }
                         }
-
-                        if (onTouchBall(ball, i, overlap)) {
-                            overlap = true;
+                        if (onTouchBall(ball, i)) {
                             i--;
                             continue;
                         }
@@ -309,6 +312,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
         }
 
+
         /*
         * LoadTime gives the diffence of time for the program to complete one cycle
         * From the top of it's while(gameIsRunning) Loop
@@ -332,7 +336,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
             if (gameFPS == null)
                 gameFPS = Integer.toString(load_FPS);
-            Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
+            //Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
 
         }
 
@@ -374,14 +378,21 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * returns true if there hasn't been an overlap detected
         * returns false if there already is an overlap
         * */
-        public boolean onTouchBall(ArrayList<Ball> ball, int i, boolean stack) {
+        public boolean onTouchBall(ArrayList<Ball> ball, int i) {
             boolean status = false;
+            MediaPlayer pop;
+            MediaPlayer wrong_pop;
 
-            if (!stack) {
+            pop =  MediaPlayer.create(Play.this, R.raw._correct_pop);
+            wrong_pop =  MediaPlayer.create(Play.this, R.raw._wrong_pop2);
+            if (overlap) {
                 status = true;
+                overlap = false;
                 if (ball.get(i).getBallColor() == game_ball_color) {
+                    pop.start();                //Special effect when corret ball is pop
                     scoreBoard = increaseScore(scoreBoard);
                 } else {
+                    wrong_pop.start();
                     changeTime();
                 }
                 ball.remove(i);
