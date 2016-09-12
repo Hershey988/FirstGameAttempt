@@ -22,8 +22,8 @@ public class Ball extends AppCompatActivity {
         ballInit();
         setImage(image);
         Random r = new Random();
-        speedX = r.nextInt(10) + 1; // + 1 prevents the possibility of getting 0 speed
-        speedY = r.nextInt(10) + 1; // + 1 prevents the possibility of getting 0 speed
+        speedX = (r.nextInt(10) + 1) * (int) Math.pow((-1), r.nextInt(2)); // + 1 prevents the possibility of getting 0 speed
+        speedY = (r.nextInt(10) + 1) * (int) Math.pow((-1), r.nextInt(2)); // * (-1) ^ (0,1) gives us a random direction;
         color = ballColor;
     }
 

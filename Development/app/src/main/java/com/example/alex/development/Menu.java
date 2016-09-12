@@ -24,7 +24,7 @@ public class Menu extends Activity{
     boolean music;  //Checks if we should play music
 
     public void playPress(View view) {
-        Intent intent = new Intent(getApplicationContext(), Play.class);
+        Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
         startActivity(intent);
     }
 

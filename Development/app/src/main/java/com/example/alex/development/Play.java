@@ -77,8 +77,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
             setBall(ballimg, color);
         }
+        Bundle getBallColor = getIntent().getExtras();
 
-        game_ball_color = r.nextInt(3) + 1;
+        game_ball_color = getBallColor.getInt("game_ball_color"); //Returns the same ball color as the one saved in LoadingScreen.
         display = new Drawing(this);
         display.setOnTouchListener(this);       //initiates the onTouchListener
         setContentView(display);
@@ -97,15 +98,19 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         ball.add(new Ball(ball_image, color));
     }
 
+    MediaPlayer backMusic; //Plays music in the background
     @Override
     protected void onPause() {
         super.onPause();
+        //backMusic.stop();
         display.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+       // backMusic = MediaPlayer.create(Play.this, R.raw.middleislandaldo);
+        //backMusic.start();
         display.resume();
     }
 
@@ -360,6 +365,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             String time = Long.toString(timeRemaining);
             if (timeRemaining < 10) {
                 Log.i("Amount of time left ", time);
+
                 Intent openLost = new Intent(getApplicationContext(), Lose.class);
                 openLost.putExtra("Score", results);
                 startActivity(openLost);
