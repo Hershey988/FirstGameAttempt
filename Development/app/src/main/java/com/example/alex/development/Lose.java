@@ -17,7 +17,7 @@ public class Lose extends Activity {
     }
 
     public void playPress(View view) {
-        Intent intent = new Intent(getApplicationContext(), Play.class);
+        Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
         startActivity(intent);
     }
     @Override
@@ -27,12 +27,13 @@ public class Lose extends Activity {
         TextView loseScreen = (TextView) findViewById(R.id.loseText);
 
         Bundle getResults = getIntent().getExtras(); //Gets results from the last activity Play
-        String score = "Error no score Found";
+        int score = -1;
         if(getResults != null) {
-            score = getResults.getString("Score");
+            score = getResults.getInt("Score");
         }
-        if(score.length() < 2)
-            score = " 0";
+        if(score < 2) {
+            score = 0;
+        }
         loseScreen.setText("Time's up! Your score was:" + score);
     }
 

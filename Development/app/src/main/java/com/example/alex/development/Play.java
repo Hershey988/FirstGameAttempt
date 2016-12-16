@@ -63,19 +63,21 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final long starting_time = 50000;
+        final long starting_time = 20000; // Orginally 50000
         final long one_second_interval = 1000;
 
         timer = new CounterClass(starting_time, one_second_interval);
         timer.start();
         Random r = new Random();
-
-        int numOfBall = 20;
+        Bundle getLevel = getIntent().getExtras();
+        int level = getLevel.getInt("Level");
+        int numOfBall = 5 + level;
+        int min = level + 1; //avoid zero possibility by + 1
+        int max = 1 + level*2;//avoid zero possibility
         for (int i = 0; i < numOfBall; i++) {
             Bitmap ballimg = null;
             int color = r.nextInt(3) + 1; // there are 3 colors
-
-            setBall(ballimg, color);
+            setBall(ballimg, color, min, max);
         }
         Bundle getBallColor = getIntent().getExtras();
 
@@ -87,18 +89,27 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
 
     //Sets up a new instance of ball
-    public void setBall(Bitmap ball_image, int color) {
-        if (color == RED) {
-            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
-        } else if (color == GREEN) {
-            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
-        } else if (color == BLUE) {
-            ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+    public void setBall(Bitmap ball_image, int color, int min, int max) {
+        switch (color) {
+            case RED:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                break;
+            case GREEN:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                break;
+            case BLUE:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                break;
+            default:
+                System.out.println("We got an invalid color in loading.java");
+                break;
+
         }
-        ball.add(new Ball(ball_image, color));
+        ball.add(new Ball(ball_image, color, min, max));
     }
 
     MediaPlayer backMusic; //Plays music in the background
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -109,24 +120,21 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     @Override
     protected void onResume() {
         super.onResume();
-       // backMusic = MediaPlayer.create(Play.this, R.raw.middleislandaldo);
+        // backMusic = MediaPlayer.create(Play.this, R.raw.middleislandaldo);
         //backMusic.start();
         display.resume();
     }
 
     /**
-     * Increases our ScoreBoard by 100
+     * Increases our current score  by 100
      */
-    public String increaseScore(String scoreBoard) {
+    public int increaseScore(int currScore) {
         int incrementScore = 100;
-        if (scoreBoard.length() > 6) {
-            userScore += incrementScore;
-            scoreBoard = scoreBoard.substring(0, 7) + userScore; //five characters in Score:;
-        }
-        return scoreBoard;
+        return currScore + incrementScore;
     }
 
     boolean overlap = true;
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
@@ -168,7 +176,11 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
 
 /*
-* Draws on Canvas
+* Drawing class is the meat of the program. The constructor sets up our new thread that will
+* continously running to avoid blocking the main UI thread.
+* When the app is tabbed out "pause" method will be executed
+* when the app is tabbed back in "resume" method will execute
+* While on screen the app continously runs the "run" method
 * */
 
 
@@ -197,15 +209,34 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
         public void resume() {
             game_is_running = true;
-            ourThread = new Thread(this);
+            ourThread = new Thread(this);  //No idea if this is actually needed or what this does
             ourThread.start();
         }
 
 
-        String scoreBoard = "Score: 0000";
+        int currScore = -1; // -1 is default unintialized
 
+
+        /*
+        * Run creates a blank canvas and redraws all the balls on the canvas the FPS is set in
+        * the method "game_FPS" This function iterates through our ball array and changes the
+        * positions of those balls base on their given speed.
+        * If the onTouch method detects the finger press matches the ball position
+        * we removed the ball from the array list
+        *
+        *
+        * */
         @Override
         public void run() {
+            //If currScore is unintialized, check if we had a previous score
+            if(currScore == -1) {
+                Bundle getScore = getIntent().getExtras();
+                try{
+                    currScore = getScore.getInt("Score");
+                } catch (NullPointerException e) {
+                    currScore = 0;
+                }
+            }
             Paint textEdit = new Paint();
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
@@ -214,7 +245,6 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
             int image_clip = 0; // Show's one clip of an image example image 1 in |1|2|3|4|5|
             final int next_clip = 20; //distance of the next image clip example from image 1 to 2 in |1|2|3|4|5|
-
 
 
             long delay;
@@ -280,10 +310,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                         }
                     }
 
-                    canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
                     changeBallPosition(ball.get(i), canvas);
+                    canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
                 }
-                canvas.drawText(scoreBoard, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
+                canvas.drawText("Score: " + currScore, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
                 canvas.drawText(minAndSecs, 200, 64, textEdit);
                 //ARbitrary defined colors to number
 
@@ -309,9 +339,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 case RED:
                     return BitmapFactory.decodeResource(getResources(), R.drawable.redball);
                 case GREEN:
-                    return  BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
                 case BLUE:
-                    return  BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
                 default:
                     return BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
             }
@@ -326,7 +356,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         *
         * */
         private void game_FPS(int loadTime) {
-            int FrameRate = 35;
+            int FrameRate = 60;
             int frame_per_cycle = 1000 / FrameRate; //gives the time per frame cycle
             int load_FPS = 1000 / loadTime;
             String gameFPS = null;
@@ -353,23 +383,25 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * then move to Lose activity and past on the score
         * */
         public void gameStatus(int balls) {
-            String results = scoreBoard.substring(6, scoreBoard.length());
-            if (balls == 0) {
-                // win game show score
-                Log.i("INFORMATION FOR SCORE", results);
+                if (balls == 0) {
+                // win game pass down the currScore to add to the next level
+//                Intent openScore = new Intent(getApplicationContext(), Score.class);
+//                openScore.putExtra("Score", currScore);
+//                startActivity(openScore);
 
-                Intent openScore = new Intent(getApplicationContext(), Score.class);
-                openScore.putExtra("Score", results);
-                startActivity(openScore);
+                    Bundle getLevel = getIntent().getExtras();
+                    int level = getLevel.getInt("Level");
+                    Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
+                    intent.putExtra("Score", currScore);
+                    intent.putExtra("Level", level);
+                    startActivity(intent);
             }
-            String time = Long.toString(timeRemaining);
-            if (timeRemaining < 10) {
-                Log.i("Amount of time left ", time);
 
-                Intent openLost = new Intent(getApplicationContext(), Lose.class);
-                openLost.putExtra("Score", results);
-                startActivity(openLost);
+            if (timeRemaining  == 0) {
                 // lose game show score
+                Intent openLost = new Intent(getApplicationContext(), Lose.class);
+                openLost.putExtra("Score", currScore);
+                startActivity(openLost);
             }
 
         }
@@ -389,14 +421,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             MediaPlayer pop;
             MediaPlayer wrong_pop;
 
-            pop =  MediaPlayer.create(Play.this, R.raw._correct_pop);
-            wrong_pop =  MediaPlayer.create(Play.this, R.raw._wrong_pop2);
+            pop = MediaPlayer.create(Play.this, R.raw._correct_pop);
+            wrong_pop = MediaPlayer.create(Play.this, R.raw._wrong_pop2);
             if (overlap) {
                 status = true;
                 overlap = false;
                 if (ball.get(i).getBallColor() == game_ball_color) {
                     pop.start();                //Special effect when corret ball is pop
-                    scoreBoard = increaseScore(scoreBoard);
+                    currScore = increaseScore(currScore);
                 } else {
                     wrong_pop.start();
                     changeTime();

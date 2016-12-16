@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Score: 0000"
+        android:text="Score: "
         android:id="@+id/ScoreKeeper"
         android:layout_marginRight="24dp"
         android:layout_marginEnd="24dp"
