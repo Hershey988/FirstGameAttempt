@@ -42,11 +42,12 @@ public class Lose extends Activity {
 //        int newHighScore = -1;
         for (int i = 0; i < topScores.length; i++) {
             int prevScore = userHighScores.getInt(topScores[i], defaultValue);
+            //Uncomment the next 2 lines to reset the highScores to 0 remember to recomment after
 //            edit.putInt(topScores[i], 0);
 //            edit.commit();
             if (prevScore < currScore) {
                 for (int j = topScores.length - 1; j > i; j--){
-                    prevScore = userHighScores.getInt(topScores[j-1], defaultValue);
+                    prevScore = userHighScores.getInt(topScores[j+1], defaultValue);
                     edit.putInt(topScores[j], prevScore);
                 }
                 edit.putInt(topScores[i], currScore);
