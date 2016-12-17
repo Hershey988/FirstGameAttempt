@@ -47,7 +47,7 @@ public class Lose extends Activity {
 //            edit.commit();
             if (prevScore < currScore) {
                 for (int j = topScores.length - 1; j > i; j--){
-                    prevScore = userHighScores.getInt(topScores[j+1], defaultValue);
+                    prevScore = userHighScores.getInt(topScores[j-1], defaultValue);
                     edit.putInt(topScores[j], prevScore);
                 }
                 edit.putInt(topScores[i], currScore);
