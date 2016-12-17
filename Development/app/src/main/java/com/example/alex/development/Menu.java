@@ -26,6 +26,7 @@ public class Menu extends Activity{
     public void playPress(View view) {
         Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
         startActivity(intent);
+        finish();
     }
 
     public void settingsPressed(View view) {

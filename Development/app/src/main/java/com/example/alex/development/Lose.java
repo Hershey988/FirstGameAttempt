@@ -50,6 +50,7 @@ public class Lose extends Activity {
                     prevScore = userHighScores.getInt(topScores[j-1], defaultValue);
                     edit.putInt(topScores[j], prevScore);
                 }
+
                 edit.putInt(topScores[i], currScore);
                 edit.commit();//You gotta commit to your scores human
                 break;
