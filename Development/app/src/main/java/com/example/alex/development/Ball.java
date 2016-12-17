@@ -37,6 +37,7 @@ public class Ball extends AppCompatActivity {
         int range = 500;
 
         posX = r.nextInt(range);
+        if(posX < )
         posY = r.nextInt(range);
     }
 
