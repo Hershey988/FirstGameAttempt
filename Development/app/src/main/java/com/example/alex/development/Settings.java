@@ -39,8 +39,11 @@ public class Settings extends Activity {
                 }
             }
         });
-        if(toggleOn())
+        if(toggleOn()) {
             backgroundMusic.start();
+        } else {
+            backgroundMusic.pause();
+            }
     }
 
 

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Development</string>
+    <string name="score_key">com.alex.development.HighScores</string>
+    <string-array name="top_scores">
+        <item>score1</item>
+        <item>score2</item>
+        <item>score3</item>
+        <item>score4</item>
+        <item>score5</item>
+    </string-array>
 </resources>

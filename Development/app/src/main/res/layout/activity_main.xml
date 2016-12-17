@@ -28,6 +28,17 @@
         android:layout_marginTop="180dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Scores"
+        android:id="@+id/high_activity"
+        android:onClick="scorePressed"
+        android:padding="20dp"
+        android:background="#f85f42"
+        android:layout_below="@+id/play_activity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -37,7 +48,8 @@
         android:padding="20dp"
         android:background="#9a0cf5"
         android:onClick="settingsPressed"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/high_activity"
         android:layout_centerHorizontal="true" />
 
 

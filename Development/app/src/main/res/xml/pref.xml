@@ -6,4 +6,5 @@
         android:key="musicbox"
         android:summary="plays music if true else don't"
         />
+
 </PreferenceScreen>

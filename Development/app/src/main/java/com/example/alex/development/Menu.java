@@ -32,7 +32,10 @@ public class Menu extends Activity{
         Intent intent = new Intent(getApplicationContext(), Settings.class);
         startActivity(intent);
     }
-
+    public void scorePressed(View view) {
+        Intent intent = new Intent(getApplicationContext(), Score.class);
+        startActivity(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
