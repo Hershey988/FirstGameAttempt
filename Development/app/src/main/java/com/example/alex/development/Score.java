@@ -19,39 +19,31 @@ public class Score extends Activity {
         startActivity(intent);
     }
 
-//    public void playPress(View view) {
-//        //Keep the score that is currently being display
-//        Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
-//        intent.putExtra("Score", score);
-//        startActivity(intent);
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.score_screen);
+        String scoreKey = getResources().getString(R.string.score_key);
 
-        String scoreKey = getString(R.string.score_key);
+//        String scoreKey = getString(R.string.score_key);
         SharedPreferences getScore = getSharedPreferences(scoreKey, Context.MODE_PRIVATE);
 
         String[] topScores = getResources().getStringArray(R.array.top_scores);
 
-        int[] highscores = new int[5];
-
+        TextView scoreBoard = (TextView) findViewById(R.id.score1);
+        int textViewId;
+        int temp;           //temp will hold the high score values
+        String[] id = new String[]{"score1","score2","score3","score4","score5"};
         for (int i = 0; i < topScores.length; i++) {
-            highscores[i] = getScore.getInt(topScores[i], 0);
+            temp = getScore.getInt(topScores[i], 0);
+            textViewId = getResources().getIdentifier(id[i], "id", getPackageName());
+            scoreBoard = (TextView) findViewById(textViewId);
+            int scoreNumber = i + 1;
+            //example of setTExt layout "1. Score: 9999"
+            scoreBoard.setText( scoreNumber + ". Score: " + temp);
         }
 
-        TextView scoreBoard = (TextView) findViewById(R.id.score1);
-        scoreBoard.setText("1. Score: " + highscores[0]);
-        scoreBoard = (TextView) findViewById(R.id.score2);
-        scoreBoard.setText("2. Score: " + highscores[1]);
-        scoreBoard = (TextView) findViewById(R.id.score3);
-        scoreBoard.setText("3. Score: " + highscores[2]);
-        scoreBoard = (TextView) findViewById(R.id.score4);
-        scoreBoard.setText("4. Score: " + highscores[3]);
-        scoreBoard = (TextView) findViewById(R.id.score5);
-        scoreBoard.setText("5. Score: " + highscores[4]);
     }
 
     @Override

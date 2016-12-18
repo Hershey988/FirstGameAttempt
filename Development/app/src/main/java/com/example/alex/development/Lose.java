@@ -32,9 +32,13 @@ public class Lose extends Activity {
     score5 holds lowest high score
     score1 holds highest score
     currScore holds the score the user got this round
+    returns true if there is a high score
+    returns false if there is no high score
      */
+
+
     public boolean checkHighScore(int currScore) {
-        String scoreKey = getString(R.string.score_key);
+        String scoreKey = getResources().getString(R.string.score_key);;
 
         SharedPreferences userHighScores = getSharedPreferences(scoreKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = getSharedPreferences(scoreKey, Context.MODE_PRIVATE).edit();
