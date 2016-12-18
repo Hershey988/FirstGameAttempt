@@ -39,7 +39,7 @@ public class Score extends Activity {
         int[] highscores = new int[5];
 
         for (int i = 0; i < topScores.length; i++) {
-            highscores[i] = getScore.getInt(topScores[i], -11111);
+            highscores[i] = getScore.getInt(topScores[i], 0);
         }
 
         TextView scoreBoard = (TextView) findViewById(R.id.score1);

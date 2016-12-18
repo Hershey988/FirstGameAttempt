@@ -198,6 +198,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         Thread ourThread = null;
         boolean game_is_running = false;
 
+
+        MediaPlayer pop;
+        MediaPlayer wrong_pop;
+
         public Drawing(Context context) {
             super(context);
             ourHolder = getHolder();
@@ -206,6 +210,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
         public void pause() {
+            if (pop != null) {
+                pop.release();
+            }
+            if (wrong_pop != null) {
+                wrong_pop.release();
+            }
             game_is_running = false;
 
             try {
@@ -392,14 +402,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * then move to Lose activity and past on the score
         * */
         public void gameStatus(int balls) {
+            Bundle getLevel = getIntent().getExtras();
+            int level = getLevel.getInt("Level");
             if (balls == 0) {
                 // win game pass down the currScore to add to the next level
 //                Intent openScore = new Intent(getApplicationContext(), Score.class);
 //                openScore.putExtra("Score", currScore);
 //                startActivity(openScore);
 
-                Bundle getLevel = getIntent().getExtras();
-                int level = getLevel.getInt("Level");
+
                 Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
                 intent.putExtra("Score", currScore);
                 intent.putExtra("Level", level);
@@ -409,10 +420,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
             if (timeRemaining == 0) {
                 // lose game show score
+
                 Intent openLost = new Intent(getApplicationContext(), Lose.class);
                 openLost.putExtra("Score", currScore);
-                startActivity(openLost);
+                openLost.putExtra("Level", level);
                 finish();
+                startActivity(openLost);
             }
 
         }
@@ -429,11 +442,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * */
         public boolean onTouchBall(ArrayList<Ball> ball, int i) {
             boolean status = false;
-            MediaPlayer pop;
-            MediaPlayer wrong_pop;
+
 
             pop = MediaPlayer.create(Play.this, R.raw._correct_pop);
-            wrong_pop = MediaPlayer.create(Play.this, R.raw._wrong_pop2);
+            wrong_pop = MediaPlayer.create(Play.this, R.raw._wrong_pop3);
             if (overlap) {
                 status = true;
                 overlap = false;

@@ -6,8 +6,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Lose here"
-        android:id="@+id/loseText"
+        android:text="Score: here"
+        android:id="@+id/scoreText"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -18,7 +18,7 @@
         android:id="@+id/menuAction"
         android:layout_marginTop="35dp"
         android:onClick="menuPress"
-        android:layout_below="@+id/loseText"
+        android:layout_below="@+id/scoreText"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -28,5 +28,32 @@
         android:id="@+id/playID"
         android:onClick="playPress"
         android:layout_below="@+id/menuAction"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Level: Here"
+        android:id="@+id/levelText"
+        android:layout_above="@+id/scoreText"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="TIMES UP!"
+        android:id="@+id/textView4"
+        android:layout_above="@+id/levelText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/highScoreText"
+        android:layout_below="@+id/scoreText"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
