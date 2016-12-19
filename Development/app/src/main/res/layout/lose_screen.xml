@@ -6,8 +6,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Lose here"
-        android:id="@+id/loseText"
+        android:text="Score: here"
+        android:id="@+id/scoreText"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -16,9 +16,8 @@
         android:layout_height="wrap_content"
         android:text="Main Menu"
         android:id="@+id/menuAction"
-        android:layout_marginTop="35dp"
         android:onClick="menuPress"
-        android:layout_below="@+id/loseText"
+        android:layout_above="@+id/playID"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -27,6 +26,44 @@
         android:text="Retry"
         android:id="@+id/playID"
         android:onClick="playPress"
-        android:layout_below="@+id/menuAction"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Level: Here"
+        android:id="@+id/levelText"
+        android:layout_above="@+id/scoreText"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="TIMES UP!"
+        android:id="@+id/textView4"
+        android:layout_marginBottom="68dp"
+        android:layout_above="@+id/levelText"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/highScoreText"
+        android:layout_below="@+id/scoreText"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/secretMessage"
+        android:layout_below="@+id/highScoreText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:text="&quot;If you don&apos;t know where you are going, any road will take you there&quot; Lewis Carroll"
+        android:textAlignment="center" />
 </RelativeLayout>

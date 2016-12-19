@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Alex on 9/9/2016.
  */
@@ -30,13 +32,17 @@ public class Lose extends Activity {
     score5 holds lowest high score
     score1 holds highest score
     currScore holds the score the user got this round
+    returns true if there is a high score
+    returns false if there is no high score
      */
-    public void checkHighScore(int currScore) {
-        String scoreKey = getString(R.string.score_key);
+
+
+    public boolean checkHighScore(int currScore) {
+        String scoreKey = getResources().getString(R.string.score_key);;
 
         SharedPreferences userHighScores = getSharedPreferences(scoreKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = getSharedPreferences(scoreKey, Context.MODE_PRIVATE).edit();
-        int defaultValue = -696969;
+        int defaultValue = 0;
         String[] topScores = getResources().getStringArray(R.array.top_scores);
 
 //        int newHighScore = -1;
@@ -50,18 +56,20 @@ public class Lose extends Activity {
                     prevScore = userHighScores.getInt(topScores[j-1], defaultValue);
                     edit.putInt(topScores[j], prevScore);
                 }
+
                 edit.putInt(topScores[i], currScore);
                 edit.commit();//You gotta commit to your scores human
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lose_screen);
-        TextView loseScreen = (TextView) findViewById(R.id.loseText);
+        TextView loseScreen = (TextView) findViewById(R.id.scoreText);
         Bundle getResults = getIntent().getExtras(); //Gets results from the last activity Play
         int score = -1;
         if (getResults != null) {
@@ -70,9 +78,16 @@ public class Lose extends Activity {
         if (score < 2) {
             score = 0;
         }
-        checkHighScore(score);
+        int level = getResults.getInt("Level");
+        loseScreen.setText("Score:" + score);
 
-        loseScreen.setText("Time's up! Your score was:" + score);
+        boolean newHighScore = checkHighScore(score);
+        if(newHighScore) {
+            loseScreen = (TextView) findViewById(R.id.highScoreText);
+            loseScreen.setText("A NEW HIGH SCORE!");
+        }
+        loseScreen = (TextView) findViewById(R.id.levelText);
+        loseScreen.setText("Final Level: " + level);
     }
 
     @Override

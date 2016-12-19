@@ -71,17 +71,25 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         Random r = new Random();
         Bundle getLevel = getIntent().getExtras();
         int level = getLevel.getInt("Level");
-        int numOfBall = 5 + level;
+        int numOfBall = level * 2 - 1;
         int min = level + 1; //avoid zero possibility by + 1
-        int max = 1 + level*2;//avoid zero possibility
-        for (int i = 0; i < numOfBall; i++) {
-            Bitmap ballimg = null;
-            int color = r.nextInt(3) + 1; // there are 3 colors
-            setBall(ballimg, color, min, max);
-        }
+        int max = 1 + level * 2;//avoid zero possibility
+        Bitmap ballimg = null;
         Bundle getBallColor = getIntent().getExtras();
-
         game_ball_color = getBallColor.getInt("game_ball_color"); //Returns the same ball color as the one saved in LoadingScreen.
+
+        int color;
+        color = game_ball_color;
+        for (int i = 0; i < numOfBall - level; i++) {
+            while (color == game_ball_color) {
+                color = r.nextInt(3) + 1; // there are 3 colors
+            }
+            setBall(ballimg, color, min, max);
+            color = game_ball_color;
+        }
+        for (int i = 0; i < level; i++) {
+            setBall(ballimg, game_ball_color, min, max);
+        }
         display = new Drawing(this);
         display.setOnTouchListener(this);       //initiates the onTouchListener
         setContentView(display);
@@ -115,6 +123,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         super.onPause();
         //backMusic.stop();
         display.pause();
+        finish();
     }
 
     @Override
@@ -189,6 +198,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         Thread ourThread = null;
         boolean game_is_running = false;
 
+
+        MediaPlayer pop;
+        MediaPlayer wrong_pop;
+
         public Drawing(Context context) {
             super(context);
             ourHolder = getHolder();
@@ -197,6 +210,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         }
 
         public void pause() {
+            if (pop != null) {
+                pop.release();
+            }
+            if (wrong_pop != null) {
+                wrong_pop.release();
+            }
             game_is_running = false;
 
             try {
@@ -229,9 +248,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         @Override
         public void run() {
             //If currScore is unintialized, check if we had a previous score
-            if(currScore == -1) {
+            if (currScore == -1) {
                 Bundle getScore = getIntent().getExtras();
-                try{
+                try {
                     currScore = getScore.getInt("Score");
                 } catch (NullPointerException e) {
                     currScore = 0;
@@ -371,7 +390,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
             if (gameFPS == null)
                 gameFPS = Integer.toString(load_FPS);
-            Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
+            //Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
 
         }
 
@@ -383,24 +402,29 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * then move to Lose activity and past on the score
         * */
         public void gameStatus(int balls) {
-                if (balls == 0) {
+            Bundle getLevel = getIntent().getExtras();
+            int level = getLevel.getInt("Level");
+            if (balls == 0) {
                 // win game pass down the currScore to add to the next level
 //                Intent openScore = new Intent(getApplicationContext(), Score.class);
 //                openScore.putExtra("Score", currScore);
 //                startActivity(openScore);
 
-                    Bundle getLevel = getIntent().getExtras();
-                    int level = getLevel.getInt("Level");
-                    Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
-                    intent.putExtra("Score", currScore);
-                    intent.putExtra("Level", level);
-                    startActivity(intent);
+
+                Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
+                intent.putExtra("Score", currScore);
+                intent.putExtra("Level", level);
+                startActivity(intent);
+                finish();
             }
 
-            if (timeRemaining  == 0) {
+            if (timeRemaining == 0) {
                 // lose game show score
+
                 Intent openLost = new Intent(getApplicationContext(), Lose.class);
                 openLost.putExtra("Score", currScore);
+                openLost.putExtra("Level", level);
+                finish();
                 startActivity(openLost);
             }
 
@@ -418,11 +442,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         * */
         public boolean onTouchBall(ArrayList<Ball> ball, int i) {
             boolean status = false;
-            MediaPlayer pop;
-            MediaPlayer wrong_pop;
+
 
             pop = MediaPlayer.create(Play.this, R.raw._correct_pop);
-            wrong_pop = MediaPlayer.create(Play.this, R.raw._wrong_pop2);
+            wrong_pop = MediaPlayer.create(Play.this, R.raw._wrong_pop3);
             if (overlap) {
                 status = true;
                 overlap = false;

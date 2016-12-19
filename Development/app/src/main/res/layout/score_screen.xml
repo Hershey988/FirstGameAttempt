@@ -28,8 +28,6 @@
         android:text="1. Score: "
         android:id="@+id/score1"
         android:layout_below="@+id/ScoreText"
-        android:layout_toLeftOf="@+id/button2"
-        android:layout_toStartOf="@+id/button2"
         android:layout_marginRight="31dp"
         android:layout_marginEnd="31dp"
         android:layout_marginTop="44dp" />
