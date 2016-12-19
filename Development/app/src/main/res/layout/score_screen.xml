@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Top 5 Scores!"
+        android:id="@+id/ScoreText"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:id="@+id/button2"
+        android:onClick="menuPress"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="1. Score: "
+        android:id="@+id/score1"
+        android:layout_below="@+id/ScoreText"
+        android:layout_toLeftOf="@+id/button2"
+        android:layout_toStartOf="@+id/button2"
+        android:layout_marginRight="31dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginTop="44dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="2. Score: "
+        android:id="@+id/score2"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/score1"
+        android:layout_alignLeft="@+id/score1"
+        android:layout_alignStart="@+id/score1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="3. Score: "
+        android:id="@+id/score3"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/score2"
+        android:layout_alignLeft="@+id/score2"
+        android:layout_alignStart="@+id/score2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="4. Score: "
+        android:id="@+id/score4"
+        android:layout_below="@+id/score3"
+        android:layout_alignLeft="@+id/score3"
+        android:layout_alignStart="@+id/score3"
+        android:layout_marginTop="52dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="5. Score: "
+        android:id="@+id/score5"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/score4"
+        android:layout_alignLeft="@+id/score4"
+        android:layout_alignStart="@+id/score4" />
+
+</RelativeLayout>

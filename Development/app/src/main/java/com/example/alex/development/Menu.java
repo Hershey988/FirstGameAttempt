@@ -16,13 +16,15 @@ import android.widget.ListView;
 /**
  * Created by Alex on 8/31/2016.
  */
+
+//Classes list Play, Settings,
 public class Menu extends Activity{
     String classes[] = {"Play", "Settings"};
     MediaPlayer ourSong;
     boolean music;  //Checks if we should play music
 
     public void playPress(View view) {
-        Intent intent = new Intent(getApplicationContext(), Play.class);
+        Intent intent = new Intent(getApplicationContext(), LoadingScreen.class);
         startActivity(intent);
     }
 
@@ -30,36 +32,17 @@ public class Menu extends Activity{
         Intent intent = new Intent(getApplicationContext(), Settings.class);
         startActivity(intent);
     }
-
+    public void scorePressed(View view) {
+        Intent intent = new Intent(getApplicationContext(), Score.class);
+        startActivity(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ourSong = MediaPlayer.create(Menu.this, R.raw.jazzelevator);
-
-        SharedPreferences getPrefs = getSharedPreferences("musicSet", Context.MODE_PRIVATE);
-        music = getPrefs.getBoolean("isMusicOn", true);
-        if(music)
-        {
-            ourSong.start();
-        }
+        ourSong.start();
     }
-
-    /*
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        String currentClass = classes[position];
-        try{
-            Class ourClass = Class.forName("com.example.alex.development." + currentClass);
-            Intent myIntent = new Intent(Menu.this, ourClass);
-            startActivity(myIntent);
-        } catch (ClassNotFoundException e){
-            e.printStackTrace();
-        }
-
-    }
-    * */
 
     @Override
     protected void onResume() {
@@ -68,6 +51,7 @@ public class Menu extends Activity{
         music = getPrefs.getBoolean("isMusicOn", true);
         if(music)
         {
+            ourSong = MediaPlayer.create(Menu.this, R.raw.jazzelevator);
             ourSong.start();
         }
     }
@@ -75,7 +59,7 @@ public class Menu extends Activity{
     @Override
     protected void onPause() {
         super.onPause();
-       // ourSong.pause();
+        ourSong.pause();
 
     }
 }
