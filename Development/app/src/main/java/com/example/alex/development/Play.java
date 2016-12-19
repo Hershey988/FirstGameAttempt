@@ -390,7 +390,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             }
             if (gameFPS == null)
                 gameFPS = Integer.toString(load_FPS);
-            Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
+            //Log.i("Game FPS: ", gameFPS); //Prints out in console the current Game FPS
 
         }
 
