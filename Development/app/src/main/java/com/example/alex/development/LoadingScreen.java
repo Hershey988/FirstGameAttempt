@@ -128,11 +128,11 @@ public class LoadingScreen extends AppCompatActivity {
         public void onFinish() {
             Bundle getInfo = getIntent().getExtras();
             Intent play = new Intent(getApplicationContext(), Play.class);
-            int level;
+            int level = 1;
             try {
                 level = getInfo.getInt("Level");
             } catch (NullPointerException e) {
-                level = 0;
+                level = 2;
             }
              /*
             This should be were we set up the level difficulty
