@@ -41,7 +41,7 @@ public class LoadingScreen extends AppCompatActivity {
         setBall(game_ball_color);
         gameBall.setImageBitmap(ball);
         //CounterClass(Counter in Miliseconds, tick)
-        CounterClass countDown = new CounterClass(3000, 1);
+        CounterClass countDown = new CounterClass(1, 1);
         TextView loadScreen = (TextView) findViewById(R.id.ScoreKeeper);
         Bundle getInfo = getIntent().getExtras();
 
