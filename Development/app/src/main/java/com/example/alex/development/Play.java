@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -41,7 +42,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     Drawing display;
     float touchX, touchY;
     private static int game_ball_color;
-
+    int numOfBallColors = 6;
     String minAndSecs = "No Time Started";
     long timeRemaining = 0;
     int userScore = 0;
@@ -50,8 +51,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     final int RED = 1;
     final int GREEN = 2;
     final int BLUE = 3;
+    final int ORANGE = 4;
+    final int PURPLE = 5;
+    final int YELLOW = 6;
     CounterClass timer;
 
+    final int balldimensions = 100;
     // Music, sound list
     MediaPlayer backgroundMusic;
 
@@ -82,7 +87,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         color = game_ball_color;
         for (int i = 0; i < numOfBall - level; i++) {
             while (color == game_ball_color) {
-                color = r.nextInt(3) + 1; // there are 3 colors
+                color = r.nextInt(numOfBallColors) + 1; // there are 3 colors
             }
             setBall(ballimg, color, min, max);
             color = game_ball_color;
@@ -111,6 +116,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 break;
             case BLUE:
                 ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                break;
+            case ORANGE:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.orangeball);
+                break;
+            case PURPLE:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.purpleball);
+                break;
+            case YELLOW:
+                ball_image = BitmapFactory.decodeResource(getResources(), R.drawable.yellowball);
                 break;
             default:
                 System.out.println("We got an invalid color in loading.java");
@@ -264,8 +278,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             Paint textEdit = new Paint();
             textEdit.setTextAlign(Paint.Align.RIGHT);
             textEdit.setTextSize(32);
-            textEdit.setColor(0xff000000);  // black
-            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.nebula_animate);
+            textEdit.setColor(0xffffffff);  // black
+            Bitmap backGND = BitmapFactory.decodeResource(getResources(), R.drawable.gameplaybackground);
 
             int image_clip = 0; // Show's one clip of an image example image 1 in |1|2|3|4|5|
             final int next_clip = 20; //distance of the next image clip example from image 1 to 2 in |1|2|3|4|5|
@@ -274,9 +288,14 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             long delay;
             int centerX, centerY;
             Bitmap img = game_ball_image();
+
+            Bitmap resizeImg = Bitmap.createScaledBitmap(img, balldimensions, balldimensions, true);
             Rect frame, spriteFrame;
             int imgWidth, imgHeight;
             int counter;
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
             while (game_is_running) {
                 if (!ourHolder.getSurface().isValid())
                     continue;
@@ -287,17 +306,17 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
                 centerX = canvas.getWidth();
                 centerY = canvas.getHeight();
-                frame = new Rect(0, image_clip, backGND.getWidth(), 400 + image_clip);
-                spriteFrame = new Rect(0, 0, centerX, centerY);
+//                frame = new Rect(0, image_clip, backGND.getWidth(), 400 + image_clip);
+//                spriteFrame = new Rect(0, 0, centerX, centerY);
 
-                image_clip += next_clip;
-                if (image_clip >= backGND.getHeight() - 400) {
-                    image_clip = next_clip;
-                }
-
-                canvas.drawBitmap(backGND, frame, spriteFrame, null);
-
-
+//                image_clip += next_clip;
+//                if (image_clip >= backGND.getHeight() - 400) {
+//                    image_clip = next_clip;
+//                }
+//
+//                canvas.drawBitmap(backGND, frame, spriteFrame, null);
+                Bitmap resizeBackGND = Bitmap.createScaledBitmap(backGND, centerX, centerY, false);
+                canvas.drawBitmap(resizeBackGND, 0, 0, null);
                 counter = 0;
                 for (int i = 0; i < ball.size(); i++) {
                     if (ball.get(i).getBallColor() == game_ball_color) {
@@ -307,9 +326,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     //gets the dimensions of the ball plus position
                     //to check if we touched the ball area.
                     imgWidth = ball.get(i).getImage().getWidth();
+                    imgHeight = ball.get(i).getImage().getHeight();
                     int ballX = ball.get(i).getPositionX();
                     int ballY = ball.get(i).getPositionY();
-                    imgHeight = ball.get(i).getImage().getHeight();
 
                     // check if ball is in range of touch
                     if (ballX < touchX && touchX < (ballX + imgWidth) &&
@@ -335,13 +354,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                     }
 
                     changeBallPosition(ball.get(i), canvas);
-                    canvas.drawBitmap(ball.get(i).getImage(), ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
+                    Bitmap ballImg = Bitmap.createScaledBitmap(ball.get(i).getImage(), balldimensions, balldimensions, true);
+                    canvas.drawBitmap(ballImg, ball.get(i).getPositionX(), ball.get(i).getPositionY(), null);
                 }
                 canvas.drawText("Score: " + currScore, canvas.getWidth(), 64, textEdit); //text Edit determines, size, align, color etc
                 canvas.drawText(minAndSecs, 200, 64, textEdit);
                 //ARbitrary defined colors to number
 
-                canvas.drawBitmap(img, centerX / 2 - (img.getWidth() / 2), 0, null);    // Draws the game Ball
+                //canvas.drawBitmap(resizeImg, centerX / 2 - (img.getWidth() / 2), 0, null);    // Draws the game Ball
+                canvas.drawBitmap(resizeImg, centerX / 2 - resizeImg.getWidth() / 2, 10, null);    // Draws the game Ball
 
                 long stop = System.currentTimeMillis();
                 int loadTime = (int) (stop - delay);
@@ -361,13 +382,19 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 
             switch (game_ball_color) {
                 case RED:
-                    return BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.redl);
                 case GREEN:
-                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenl);
                 case BLUE:
-                    return BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.bluel);
+                case ORANGE:
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.orangel);
+                case PURPLE:
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.purplel);
+                case YELLOW:
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.yellowl);
                 default:
-                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                    return BitmapFactory.decodeResource(getResources(), R.drawable.greenl);
             }
         }
 

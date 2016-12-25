@@ -21,12 +21,15 @@ import java.util.Random;
 
 public class LoadingScreen extends AppCompatActivity {
     Random r = new Random();
-    final int game_ball_color = r.nextInt(3) + 1;
+    int numOfBallColors = 6;
+    final int game_ball_color = r.nextInt(numOfBallColors) + 1;
     final int RED = 1;
     final int GREEN = 2;
     final int BLUE = 3;
+    final int ORANGE = 4;
+    final int PURPLE = 5;
+    final int YELLOW = 6;
     Bitmap ball;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,13 +81,22 @@ public class LoadingScreen extends AppCompatActivity {
     public void setBall(int color) {
         switch (color) {
             case RED:
-                ball = BitmapFactory.decodeResource(getResources(), R.drawable.redball);
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.redl);
                 break;
             case GREEN:
-                ball = BitmapFactory.decodeResource(getResources(), R.drawable.greenball);
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.greenl);
                 break;
             case BLUE:
-                ball = BitmapFactory.decodeResource(getResources(), R.drawable.blueball);
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.bluel);
+                break;
+            case ORANGE:
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.orangel);
+                break;
+            case PURPLE:
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.purplel);
+                break;
+            case YELLOW:
+                ball = BitmapFactory.decodeResource(getResources(), R.drawable.yellowl);
                 break;
             default:
                 System.out.println("You somehow broke the color setball");
@@ -116,11 +128,11 @@ public class LoadingScreen extends AppCompatActivity {
         public void onFinish() {
             Bundle getInfo = getIntent().getExtras();
             Intent play = new Intent(getApplicationContext(), Play.class);
-            int level;
+            int level = 1;
             try {
                 level = getInfo.getInt("Level");
             } catch (NullPointerException e) {
-                level = 0;
+                level = 2;
             }
              /*
             This should be were we set up the level difficulty
