@@ -59,7 +59,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     final int YELLOW = 6;
     CounterClass timer;
 
-    final int balldimensions = pxToDp(225);
+    final int balldimensions = dpToPx(60);
     // Music, sound list
     MediaPlayer backgroundMusic;
 
@@ -68,7 +68,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     public static int pxToDp(int px) {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
-
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
     /*
     * Set's up the timer, the # of balls in game, the balls colors
     * creates instances of balls, initializes game_ball_color,
