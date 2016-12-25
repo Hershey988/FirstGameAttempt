@@ -309,9 +309,12 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
             DisplayMetrics metrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+            Bitmap resizeBackGND = Bitmap.createScaledBitmap(backGND, 0, 0, false);
+
             while (game_is_running) {
-                if (!ourHolder.getSurface().isValid())
+                if (!ourHolder.getSurface().isValid()) {
                     continue;
+                }
                 delay = System.currentTimeMillis();
 
                 Canvas canvas = ourHolder.lockCanvas();
@@ -328,7 +331,6 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
 //                }
 //
 //                canvas.drawBitmap(backGND, frame, spriteFrame, null);
-                Bitmap resizeBackGND = Bitmap.createScaledBitmap(backGND, centerX, centerY, false);
                 canvas.drawBitmap(resizeBackGND, 0, 0, null);
                 counter = 0;
                 for (int i = 0; i < ball.size(); i++) {
@@ -380,9 +382,9 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
                 long stop = System.currentTimeMillis();
                 int loadTime = (int) (stop - delay);
 
-                game_FPS(loadTime);     //Gives constant FPS otherwise game is lagging
                 gameStatus(counter);    //Checks if game is won or lost
                 ourHolder.unlockCanvasAndPost(canvas);
+                game_FPS(loadTime);     //Gives constant FPS otherwise game is lagging
 
             }
         }
