@@ -19,10 +19,7 @@ import android.widget.ToggleButton;
  */
 public class Settings extends Activity {
     MediaPlayer backgroundMusic;
-    ToggleButton music;
     AudioManager manage;
-    boolean musicOn;
-    Thread threadSet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +28,7 @@ public class Settings extends Activity {
         backgroundMusic = MediaPlayer.create(Settings.this, R.raw.jazzelevator); //creates a music file of jazzeLevator and stores it to backgroungMusic.
         //music = (ToggleButton) findViewById(R.id.togMusic); //music is the variable for toggle button.
         backgroundMusic.start();
+
         manage = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //store the audio service into manage(AudioManager)
         int maxVol = manage.getStreamMaxVolume(AudioManager.STREAM_MUSIC); //store the max volume of the system into maxVol
         int curVol = manage.getStreamVolume(AudioManager.STREAM_MUSIC); //store the current volume of the system into curVol
@@ -38,6 +36,8 @@ public class Settings extends Activity {
         SeekBar volumeControl = (SeekBar) findViewById(R.id.volumeBar);
         volumeControl.setMax(maxVol);  //setting the game volume max to the system maximum value.
         volumeControl.setProgress(curVol); //sets the seekBar to Current Volume.
+
+
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

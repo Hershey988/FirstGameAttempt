@@ -53,7 +53,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     CounterClass timer;
 
     // Music, sound list
-
+    MediaPlayer backgroundMusic;
 
     /*
     * Set's up the timer, the # of balls in game, the balls colors
@@ -93,6 +93,10 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         display = new Drawing(this);
         display.setOnTouchListener(this);       //initiates the onTouchListener
         setContentView(display);
+        backgroundMusic = MediaPlayer.create(this, R.raw.jazzelevator); //creates a music file of jazzeLevator and stores it to backgroungMusic.
+        //music = (ToggleButton) findViewById(R.id.togMusic); //music is the variable for toggle button.
+       // backgroundMusic.start();
+        //backgroundMusic.setLooping(true);
     }
 
 
@@ -123,6 +127,7 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         super.onPause();
         //backMusic.stop();
         display.pause();
+        backgroundMusic.release();
         finish();
     }
 
