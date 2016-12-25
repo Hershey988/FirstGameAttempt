@@ -1,6 +1,8 @@
 package com.example.alex.development;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
@@ -22,6 +24,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -56,9 +59,15 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
     final int YELLOW = 6;
     CounterClass timer;
 
-    final int balldimensions = 100;
+    final int balldimensions = pxToDp(225);
     // Music, sound list
     MediaPlayer backgroundMusic;
+
+    //Function was brought to you by stackOverflow
+    //http://stackoverflow.com/questions/4605527/converting-pixels-to-dp
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
 
     /*
     * Set's up the timer, the # of balls in game, the balls colors
@@ -70,6 +79,8 @@ public class Play extends AppCompatActivity implements View.OnTouchListener {
         super.onCreate(savedInstanceState);
         final long starting_time = 20000; // Orginally 50000
         final long one_second_interval = 1000;
+
+
 
         timer = new CounterClass(starting_time, one_second_interval);
         timer.start();
